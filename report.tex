@@ -1,0 +1,136 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+
+\DeclareMathOperator{\diag}{diag}
+\DeclareMathOperator{\rank}{rank}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\title{Polar Decomposition}
+\author{Thomas Seleiro}
+\maketitle
+
+
+\begin{enumerate}
+	\setcounter{enumi}{1}
+	\item Prove that the singular values of $A$ are the eigenvalues of $H$.
+\end{enumerate}
+
+We know that any matrix $A\in\mathbb{C}^{m \times n}$, $m\geq n$ has 
+a thin singular value decomposition $A = P \Sigma Q^*$ where $P \in
+\mathbb{C}^{m \times n}$ has orthogonal columns, $Q \in 
+\mathbb{C}^{n \times n}$ is unitary, and $\Sigma \in 
+\mathbb{C}^{n \times n}$ is diagonal with $\Sigma = \diag(\sigma_1, 
+\ldots, \sigma_r)$ where $\rank(A) = r$ and $\sigma_1 \geq \ldots \geq
+\sigma_r \geq 0$, the singular values of $A$. Thus we can write
+\begin{align}
+	A = (PQ^*) (Q \Sigma Q^*) \eqqcolon UH
+	\label{eq:PolarSVD}
+\end{align}
+where $U$ and $H$ satisfy the properties of a polar decomposition.
+
+In particular we have $H = Q \Sigma Q^*$ where $\Sigma$ is diagonal and 
+$Q$ is orthogonal. Thus the diagonal values of $\Sigma$ are the 
+eigenvalues of $H$, which are the singular values of $A$.
+
+\begin{enumerate}
+	\setcounter{enumi}{2}
+	\item Prove that $A$ is normal ($A^*A = AA^*$) iff $U$ and $H$
+	commute.
+\end{enumerate}
+
+We first suppose that $U$ and $H$ commute. Note that for the product
+$HU$ to be well defined, we must have $m = n$ which implies
+$U\in\mathbb{C}$ is unitary. Since $A = UH = HU$ we get the following,
+\begin{align}
+	\label{eq:AstarA}
+	A^*A &= (UH)^* (UH) = H^*(U^*U)H = H^2 \\
+	AA^* &= (HU) (HU)^* = H(UU^*)H^* = H^2
+\end{align}
+so $A$ is normal.
+
+Now suppose $A$ is normal. Since $A^*A \in \mathbb{C}^{n\times n}$ and
+$AA^* \in \mathbb{C}^{m \times m}$, $A$ normal requires $m=n$.
+Using the singular value decomposition of A, we have
+\begin{align}
+	AA^* = P\Sigma Q^* Q\Sigma P^* = P\Sigma^2 P^*
+	\label{eq:AAstar}
+\end{align}
+where $\Sigma^2 = \diag(\sigma_1^2, \ldots,\sigma_r^2)$.
+Equating \ref{eq:AstarA} and \ref{eq:AAstar}, we get 
+$H^2 = P\Sigma^2P^*$. From [\cite{hojo85}, p.405], we know that there
+is a unique Hermitian positive semi-definite matrix $(AA^*)^{1/2}$ such 
+that $(AA^*)^{1/2}(AA^*)^{1/2} = AA^* = H^2$.
+It is obvious by its construction that H is said matrix, but we also
+note that $(P\Sigma P^*) (P\Sigma P^*) = P \Sigma^2P^* = AA^*$.
+Therefore $H = P\Sigma P^*$ and
+\begin{align}
+	HU = P\Sigma P^* PQ^* = P \Sigma Q^* = A = UH
+\end{align}
+by the properties of the SVD of A. Therefore U and H commute.
+ 
+
+\begin{enumerate}
+	\setcounter{enumi}{3}
+	\item Verify the formula
+	\begin{align*}
+		U = \frac{2}{\pi}A \int_{0}^{\infty} (t^2I - A^*A)^{-1}dt
+	\end{align*}
+	for full rank $A$ by using the singular value decomposition (SVD)
+	of $A$ to diagonalize the formula.
+\end{enumerate}
+
+
+
+\begin{enumerate}
+	\setcounter{enumi}{4}
+	\item Derive Newton's method for computing U by considering
+	equations $(X+E)*(X+E) = I$, where $E$ is a ``small perturbation''.
+	(Newton's method is $X_{k+1} = (X_k + X_k^{-*})/2, X_0 = A$)
+\end{enumerate}
+
+
+
+\begin{enumerate}
+	\setcounter{enumi}{5}
+	\item Prove that Newton's method converges, and at a quadratic
+	rate, by using the SVD of $A$.
+\end{enumerate}
+
+
+
+\begin{enumerate}
+	\setcounter{enumi}{6}
+	\item Use the SVD to analyze the convergence of the
+	Newton\nobreakdash-Schulz iteration for computing $U$:
+	\begin{align*}
+		X_{k+1} = \frac{1}{2}X_k(3I - X_k^* X_k), X_0 = A
+	\end{align*}
+\end{enumerate}
+
+
+
+\begin{enumerate}
+	\setcounter{enumi}{7}
+	\item Evaluate the operation count for one step of Newton's 
+	method and one step of the Newton\nobreakdash-Schulz iteration (taking
+	account of symmetry). Ignoring operation counts, how much faster
+	does matrix multiplication have to be than matrix inversion for
+	Newton\nobreakdash-Schulz to be faster than Newton (assuming both take the same number of iterations)?
+\end{enumerate}
+
+%\bibliography{mybib}
+%\bibliographystyle{plain}
+
+
+\end{document}
