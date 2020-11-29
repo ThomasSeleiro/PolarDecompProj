@@ -1,9 +1,12 @@
-\documentclass{article}
+\documentclass[10pt, A4paper]{article}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{mathtools}
+
+\usepackage{natbib}
+\setcitestyle{numbers, square}
 
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}[theorem]{Lemma}
@@ -68,7 +71,8 @@ Using the singular value decomposition of $A$, we have
 \end{align}
 where $\Sigma^2 = \diag(\sigma_1^2, \ldots,\sigma_r^2)$.
 Equating (\ref{eq:AstarA}) and (\ref{eq:AAstar}), we get 
-$H^2 = P\Sigma^2P^*$. From [, p.405], we know that there
+$H^2 = P\Sigma^2P^*$. From~[\citealp{hojo1985}, p.405], we know 
+that there
 is a unique Hermitian positive semi-definite matrix $(AA^*)^{1/2}$ such 
 that $(AA^*)^{1/2}(AA^*)^{1/2} = AA^* = H^2$.
 It is obvious by its construction that $H$ is said matrix, but we also
@@ -97,12 +101,12 @@ Since $A^*A = (Q\Sigma P^*)(P\Sigma Q^*) = Q\Sigma^2Q^*$, we have
 	t^2I + A^*A = Q(t^2I)Q^* + Q \Sigma^2Q^* = QDQ^*
 	\label{eq:Q4eq1}
 \end{align}
-where $D \coloneqq \diag(t^2 + \sigma_1, \ldots, t^2 + \sigma_r)$.
+where $D \coloneqq \diag(t^2 + \sigma_1, \ldots, t^2 + \sigma_n)$.
 Inverting (\ref{eq:Q4eq1}) gives
 \begin{align}
 	(t^2I + A^*A)^{-1} = QD^{-1}Q^*, \qquad
-	D^{-1} = \diag\left(\frac{1}{t^2+\sigma_1}, \ldots, 
-	\frac{1}{t^2+\sigma_r}\right)
+	D^{-1} = \diag\left(\frac{1}{\sigma_1^2 + t^2}\, , \ldots, 
+	\frac{1}{\sigma_n^2 + t^2}\right)
 \end{align}
 Since $Q$ and $Q^*$ do not depend on $t$, they can be taken outside the 
 integral, leaving the right hand side of~(\ref{eq:Q4}) in the form
@@ -111,17 +115,21 @@ integral, leaving the right hand side of~(\ref{eq:Q4}) in the form
 \end{align}
 The integral is a diagonal matrix where the $i$th diagonal component is
 \begin{align}
-	\int_{0}^{\infty} \frac{1}{t^2 + \sigma_i} \, dt =
+	\int_{0}^{\infty} \frac{1}{\sigma_i^2 + t^2} \, dt =
 	\left[\frac{1}{\sigma_i} \arctan \left(\frac{t}{\sigma_i}\right)
 	\right]_0^{\infty} = \frac{\pi}{2\sigma_i}
 \end{align}
-So the right hand side of (\ref{eq:Q4}) is
+using~[\citealp{jeda2008}, 4.2.4.4]. So the right-hand side of 
+(\ref{eq:Q4}) is
 \begin{align}
-	A\,Q\diag\left(\sigma_1^{-1},\ldots,\sigma_r^{-1}\right)Q^*&=
-	P\Sigma Q^* \, Q
-	\diag\left(\sigma_1^{-1},\ldots,\sigma_r^{-1}\right)Q^* \\
+	\begin{split}
+	A\,Q\diag\left(\sigma_1^{-1},\ldots,\sigma_n^{-1}\right)Q^*&=
+	P\Sigma Q^* \, Q \Sigma^{-1}Q^* \\
 	&= PQ^* = U
+	\end{split}
 \end{align}
+
+
 
 
 \begin{enumerate}
@@ -131,7 +139,39 @@ So the right hand side of (\ref{eq:Q4}) is
 	(Newton's method is $X_{k+1} = (X_k + X_k^{-*})/2, X_0 = A$)
 \end{enumerate}
 
-
+We know that $U$ is the closest unitary matrix to $A$, and since 
+$U^*U=I$, we try to find a solution to the equation
+\begin{align}
+	F(X) = 0,\qquad F(X)\coloneqq X^*X - I
+\end{align}
+using a Newton method starting at $A$.
+The general form of the Newton method [\cite{Kell2003}, p.] is
+\begin{align}
+	F(X_{k+1}) + DF_{X_k} \left[X_{k+1} - X_k\right] = 0
+	\label{eq:genNewt}
+\end{align}
+where $DF_{X_k}$ is the Fréchet derivative and, is the first order $E$ 
+term in
+\begin{align}
+	F(X+E) - F(X) = X^*E + E^*X + E^*E.
+\end{align}
+So $DF_{X_k}[E] = X^*E + E^*X$. Substituting in~(\ref{eq:genNewt}),
+\begin{align}
+	X_k^*X_k - I + X_k^* \left( X_{k+1} - X_k \right) + 
+		\left( X_{k+1}^* - X_k^* \right)X_k &= 0 \\
+	X_k^*X_k - I + X_k^* X_{k+1} - X_k^* X_k + 
+		X_{k+1}^* X_k - X_k^*  X_k &= 0 \\
+	X_k^* X_{k+1} + X_{k+1}^*X_k &= X_k^* X_k + I
+\end{align}
+We know that for any matrix we can write $B = 1/2(B + B^*) + 
+1/2(B-B^*)$, where the terms on the right-hand side are the Hermitian 
+and skew Hermitian components respectively [\citealp{hojo1985}, p.170].
+Setting the skew Hermitian part to zero, and taking $B = X_k^*X_{k+1}$ 
+gives
+\begin{align}
+	X_k^*X_{k+1} &= \frac{1}{2} \, (X_k^*X_k + I) \\
+	X_{k+1} &= \frac{1}{2} \, (X_k + X_k^{-*})
+\end{align}
 
 \begin{enumerate}
 	\setcounter{enumi}{5}
@@ -146,7 +186,7 @@ So the right hand side of (\ref{eq:Q4}) is
 	\item Use the SVD to analyze the convergence of the
 	Newton\nobreakdash-Schulz iteration for computing $U$:
 	\begin{align*}
-		X_{k+1} = \frac{1}{2}X_k(3I - X_k^* X_k), X_0 = A
+		X_{k+1} = \frac{1}{2}X_k(3I - X_k^* X_k), \qquad X_0 = A
 	\end{align*}
 \end{enumerate}
 
@@ -161,8 +201,8 @@ So the right hand side of (\ref{eq:Q4}) is
 	Newton\nobreakdash-Schulz to be faster than Newton (assuming both take the same number of iterations)?
 \end{enumerate}
 
-%\bibliography{mybib}
-%\bibliographystyle{plain}
+\bibliography{mybib}
+\bibliographystyle{plain}
 
 
 \end{document}

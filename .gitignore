@@ -2,3 +2,5 @@ Resources/
 *.aux
 *.log
 *.synctex*
+*.bbl
+*.blg
