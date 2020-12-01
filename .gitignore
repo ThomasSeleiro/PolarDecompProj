@@ -1,6 +1,9 @@
+.vscode/
 Resources/
+
 *.aux
 *.log
 *.synctex*
 *.bbl
 *.blg
+*.asv
