@@ -9,7 +9,7 @@ function [U, H, its] = poldec(A)
     its  = 0;
     newtSchulz = false;
     converged = false;
-    fprintf("k   \t|X_{k_1}-X_k|/|X_k|\t|I - X_k*X_k|\n");
+    fprintf("k   \t|X_k-X_{k-1}|/|X_{k}|\t|I - X_k*X_k|\n");
     fprintf("====\t===================\t==============\n");
     while(not(converged) && its < 1000)
         if(not(newtSchulz))
@@ -25,11 +25,9 @@ function [U, H, its] = poldec(A)
         
         iterDist = norm(Xnew - X, inf)/norm(Xnew, inf);
         unitDist = norm(eye(n) - Xnew' * Xnew, inf);
-
         
-        %Insert Newton-Schulz condition here
-        newtSchulz = false;
-        converged = unitDist <= 5e-15;
+        newtSchulz = norm(Xnew, 2) < sqrt(3);
+        converged = (unitDist <= 1e-16) || (iterDist <= 1e-16);
         
         X = Xnew;
         its = its + 1;
