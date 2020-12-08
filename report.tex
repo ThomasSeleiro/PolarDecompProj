@@ -4,6 +4,7 @@
 \usepackage{amssymb}
 \usepackage{amsthm}
 \usepackage{mathtools}
+\usepackage[linesnumbered,ruled]{algorithm2e}
 
 \usepackage{natbib}
 \setcitestyle{numbers, square}
@@ -46,6 +47,8 @@ In particular we have $H = Q \Sigma Q^*$ where $\Sigma$ is diagonal and
 $Q$ is orthogonal. Thus the diagonal values of $\Sigma$ are the 
 eigenvalues of $H$, which are the singular values of $A$.
 
+
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{2}
 	\item Prove that $A$ is normal ($A^*A = AA^*$) iff $U$ and $H$
@@ -84,6 +87,7 @@ Therefore $H = P\Sigma P^*$ and
 by the properties of the SVD of $A$. Therefore $U$ and $H$ commute.
  
 
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{3}
 	\item Verify the formula
@@ -101,17 +105,16 @@ Since $A^*A = (Q\Sigma P^*)(P\Sigma Q^*) = Q\Sigma^2Q^*$, we have
 	t^2I + A^*A = Q(t^2I)Q^* + Q \Sigma^2Q^* = QDQ^*
 	\label{eq:Q4eq1}
 \end{align}
-where $D \coloneqq \diag(t^2 + \sigma_1, \ldots, t^2 + \sigma_n)$.
+where $D \coloneqq \diag(t^2 + \sigma_i)$.
 Inverting (\ref{eq:Q4eq1}) gives
 \begin{align}
 	(t^2I + A^*A)^{-1} = QD^{-1}Q^*, \qquad
-	D^{-1} = \diag\left(\frac{1}{\sigma_1^2 + t^2}\, , \ldots, 
-	\frac{1}{\sigma_n^2 + t^2}\right)
+	D^{-1} = \diag\left(\frac{1}{\sigma_i^2 + t^2} \right)
 \end{align}
 Since $Q$ and $Q^*$ do not depend on $t$, they can be taken outside the 
 integral, leaving the right hand side of~(\ref{eq:Q4}) in the form
 \begin{align}
-	\frac{2}{\pi} A\, Q\int_{0}^{\infty}D^{-1}dt\, Q^*
+	\frac{2}{\pi} A\, Q\int_{0}^{\infty}D^{-1}dt\, Q^*.
 \end{align}
 The integral is a diagonal matrix where the $i$th diagonal component is
 \begin{align}
@@ -123,15 +126,14 @@ using~[\citealp{jeda2008}, 4.2.4.4]. So the right-hand side of
 (\ref{eq:Q4}) is
 \begin{align}
 	\begin{split}
-	A\,Q\diag\left(\sigma_1^{-1},\ldots,\sigma_n^{-1}\right)Q^*&=
-	P\Sigma Q^* \, Q \Sigma^{-1}Q^* \\
-	&= PQ^* = U
+	A\,Q\diag\left(\sigma_i^{-1}\right)Q^*&=
+	P\Sigma Q^* \, Q \Sigma^{-1}Q^* = PQ^* = U 
+%	\Sigma^{-1} isn't necessarily well defined
 	\end{split}
 \end{align}
 
 
-
-
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{4}
 	\item Derive Newton's method for computing U by considering
@@ -171,19 +173,79 @@ gives
 \begin{align}
 	X_k^*X_{k+1} &= \frac{1}{2} \, (X_k^*X_k + I) \\
 	X_{k+1} &= \frac{1}{2} \, (X_k + X_k^{-*})
+	\label{eq:newton}
 \end{align}
 
+
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{5}
 	\item Prove that Newton's method converges, and at a quadratic
 	rate, by using the SVD of $A$.
 \end{enumerate}
 
+For the Newton iteration to be well defined, we require that $A$ and 
+the iterates $X_k$ be invertible.
+
+We have the SVD of $A = P\Sigma Q^*$ and $U = PQ^*$.
+The iterates $X_k$ also have a singular value decomposition, which we 
+write $X_k=P_k \Sigma_k Q_k^*$. Using this in eq.~(\ref{eq:newton}) 
+gives
+\begin{align}
+	X_{k+1} = (X_k + X_k^{-*})/2 &= \frac{1}{2} (P_k \Sigma_k Q_k^* + 
+	P_k \Sigma_k^{-1} Q_k^*)\\
+	&= P_k \frac{1}{2}(\Sigma_k + \Sigma_k^{-1}) Q_k^*
+\end{align}
+So we can identify the factors in the SVD of $X_{k+1}$ (up to 
+reordering of rows) and get 
+\begin{align}
+	P_k = P, \qquad Q_k = Q, \qquad \Sigma_{k+1} = \frac{1}{2}
+	\left(\Sigma_k + \Sigma_k^{-1} \right)
+\end{align}
+
+We now have
+\begin{align}
+	U - X_{k+1} &= PQ^* - P\left[\frac{1}{2}
+	\left(\Sigma_k + \Sigma_k^{-1}\right)\right] Q^* \\
+	&= \frac{1}{2} P \left[\left(I - \Sigma_k\right) + 
+	\left(I - \Sigma_k^{-1}\right) \right] Q^* \\
+\end{align}
+And since
+\begin{align}
+	- \Sigma_k^{-1} (I - \Sigma_k)^2 &= -\Sigma_k^{-1}
+	\left(I - 2 \Sigma_k + \Sigma_k^2\right) \\
+	&= 2I -\Sigma_k - \Sigma_k^{-1}
+\end{align}
+we are left with $U - X_{k+1} = -P \Sigma_k^{-1} \left( I - \Sigma_k
+\right)^2 Q^* /2$.
+Taking the 2-norm on both sides and exploiting the fact that $P$ and 
+$Q$ are orthogonal,
+\begin{align}
+	\| U - X_{k+1} \|_2 &\leq \frac{1}{2}\, \left\| P\Sigma_k^{-1} 
+	\right\|_2 \left\| (I - \Sigma_k)^2 Q^*\right\|_2 \\
+	&= \frac{1}{2}\, \left\|\Sigma_k^{-1}\right\|_2 \left\| \left( I - 
+	\Sigma_k \right)^2 \right\|_2 \\
+	&\leq \frac{1}{2}\, \|X_k\|_2 \|I - \Sigma_k\|_2^2 \\
+	&= \frac{1}{2}\, \|X_k\|_2 \|U - X_k\|_2^2
+\end{align}
+
+To achieve quadratic convergence, we need to bound $\|X_k\|$ by a 
+constant. We do so by observing that
+\begin{align}
+	\|X_{k+1}\|_2 = \max_{i = 1:n} \frac{\sigma_i + \sigma_i^{-1}}{2}
+	\leq \max \left\{ \left\|X_k \right\|_2
+	, \left\|X_k^{-1} \right\|_2 \right\}
+\end{align}
+and so for all $k$, $\|X_k\|_2 \leq M \coloneqq \max\{\|A\|_2, 
+\|A^{-1}\|_2\}$.
+Thus we can conclude that the Newton method converges quadratically.
 
 
+
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{6}
-	\item Use the SVD to analyze the convergence of the
+	\item Use the SVD to analyse the convergence of the
 	Newton\nobreakdash-Schulz iteration for computing $U$:
 	\begin{align*}
 		X_{k+1} = \frac{1}{2}X_k(3I - X_k^* X_k), \qquad X_0 = A
@@ -191,7 +253,7 @@ gives
 \end{enumerate}
 
 
-
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{7}
 	\item Evaluate the operation count for one step of Newton's 
@@ -200,6 +262,56 @@ gives
 	does matrix multiplication have to be than matrix inversion for
 	Newton\nobreakdash-Schulz to be faster than Newton (assuming both take the same number of iterations)?
 \end{enumerate}
+
+We first consider the $k$th step $X_{k+1} = (X_k + X_k^{-*})/2\,$ for 
+the Newton iteration of a matrix $A \in \mathbb{C}^{n\times n}$. We 
+identify 3 main operations:
+\begin{itemize}
+	\item One matrix inversion of $X_k \in \mathbb{C}^{n \times n}$: 
+	\hfill
+	$2n^3 + O(n^2)$ flops
+	
+	\item One matrix addition in $\mathbb{C}^{n \times n}$:
+	\hfill
+	$n^2$ flops
+	
+	\item One element-wise division in $\mathbb{C}^{n \times n}$:
+	\hfill
+	$n^2$ flops
+\end{itemize}
+So the total number of operations for the Newton method is $2n^3 + 
+O(n^2)$.
+
+We now consider a step of the Newton-Schulz iteration $X_k(3I - 
+X_k^*X_K)/2$ for $X_0 = A \in \mathbb{C}^{m \times n}$.
+We fist note that $X_k^*X_k$, and by extension $(3I - X_K^*X_k)/2$, is 
+Hermitian in $\mathbb{C}^{n \times n}$.
+Therefore only the upper triangular elements of these matrices need to 
+be calculated, ie we only have to compute $\sum_{k=1}^{n} k= (n^2+n)/2$ 
+components.
+Calculating $X_k*X_k$, we use the Algorithm~\ref{alg:XstarX},
+\begin{algorithm}
+	$b_{ij} = (X_k^*X_k)_{ij}$ \;
+	\For{$i = 1:n$}
+	{
+		\For{$j = i:n$}
+		{
+			\For{$r = 1:m$}
+				{
+					$b_{ij} = b_{ij} + \overline{x_{ri}}x_{rj}$ \;
+				}
+		}
+	}
+	\caption{Algorithm to compute the top diagonal elements of 
+	$X_k^*X_k$}
+	\label{alg:XstarX}
+\end{algorithm}
+using a total of $mn^2 + mn$ flops. Forming $3I - X_k^*X_k$ and 
+dividing the result by 2 adds $n^2 + n$ operations. Finally multiplying 
+by $X_k$ takes $2mn^2$ flops for a total of $3mn^2 + O(n^2) + O(mn)$ 
+flops per step.
+
+
 
 \bibliography{mybib}
 \bibliographystyle{plain}

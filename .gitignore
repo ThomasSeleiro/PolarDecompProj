@@ -7,3 +7,5 @@ Resources/
 *.bbl
 *.blg
 *.asv
+*.fls
+*.fdb*
