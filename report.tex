@@ -5,6 +5,7 @@
 \usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage[linesnumbered,ruled]{algorithm2e}
+%\usepackage{fancyvrb}
 
 \usepackage{natbib}
 \setcitestyle{numbers, square}
@@ -13,8 +14,13 @@
 \newtheorem{lemma}[theorem]{Lemma}
 \newtheorem{corollary}[theorem]{Corollary}
 
+\newcommand{\mxm}{m \times m}
+\newcommand{\mxn}{m \times n}
+\newcommand{\nxn}{n \times n}
 \DeclareMathOperator{\diag}{diag}
 \DeclareMathOperator{\rank}{rank}
+
+\newcommand*{\consoleFont}{\fontfamily{pcr}\selectfont}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -30,11 +36,11 @@
 	\item Prove that the singular values of $A$ are the eigenvalues of $H$.
 \end{enumerate}
 
-We know that any matrix $A\in\mathbb{C}^{m \times n}$, $m\geq n$ has 
+We know that any matrix $A\in\mathbb{C}^{\mxn}$, $m\geq n$ has 
 a thin singular value decomposition $A = P \Sigma Q^*$ where $P \in
-\mathbb{C}^{m \times n}$ has orthogonal columns, $Q \in 
-\mathbb{C}^{n \times n}$ is unitary, and $\Sigma \in 
-\mathbb{C}^{n \times n}$ is diagonal with $\Sigma = \diag(\sigma_1, 
+\mathbb{C}^{\mxn}$ has orthogonal columns, $Q \in 
+\mathbb{C}^{\nxn}$ is unitary, and $\Sigma \in 
+\mathbb{C}^{\nxn}$ is diagonal with $\Sigma = \diag(\sigma_1, 
 \ldots, \sigma_r)$ where $\rank(A) = r$ and $\sigma_1 \geq \ldots \geq
 \sigma_r \geq 0$, the singular values of $A$. Thus we can write
 \begin{align}
@@ -66,7 +72,7 @@ $U\in\mathbb{C}$ is unitary. Since $A = UH = HU$ we get
 so $A$ is normal.
 
 Now suppose $A$ is normal. Since $A^*A \in \mathbb{C}^{n\times n}$ and
-$AA^* \in \mathbb{C}^{m \times m}$, $A$ normal requires $m=n$.
+$AA^* \in \mathbb{C}^{\mxm}$, $A$ normal requires $m=n$.
 Using the singular value decomposition of $A$, we have
 \begin{align}
 	AA^* = (P\Sigma Q^*) (Q\Sigma P^*) = P\Sigma^2 P^*
@@ -238,7 +244,7 @@ constant. We do so by observing that
 \end{align}
 and so for all $k$, $\|X_k\|_2 \leq M \coloneqq \max\{\|A\|_2, 
 \|A^{-1}\|_2\}$.
-Thus we can conclude that the Newton method converges quadratically.
+Thus we conclude that the Newton method converges quadratically.
 
 
 
@@ -252,6 +258,65 @@ Thus we can conclude that the Newton method converges quadratically.
 	\end{align*}
 \end{enumerate}
 
+We assume $A \in \mathbb{C}^{\mxn}$ and $m\geq n$. We replace $A$ in 
+the expression of $X_1$ with the thin SVD $A = P \Sigma Q^*$ and get
+\begin{align}
+	X_1 = \frac{1}{2}P \Sigma Q^*(3I - Q\Sigma P^* P \Sigma Q^*)
+	   &= \frac{1}{2} P \Sigma (Q^* Q) (3I - \Sigma^2) Q^* \\
+	   &= P \left[ \frac{1}{2} (3\Sigma - \Sigma^3) \right] Q^*.
+\end{align}
+Thus we can write $X_1 = P \Sigma_1 Q^*$ where $\Sigma_1 = (3\Sigma - 
+\Sigma^3)/2$.
+Applying the same method recursively we can write $X_k = P\Sigma_k Q^*$ 
+with
+\begin{align}
+\Sigma_k = \diag(\sigma_i^{(k)}), \qquad \Sigma_{k+1} = \diag
+(3\sigma_i^{(k)} - (\sigma_i^{(k)})^3).
+\end{align}
+In order for the method to converge, we require every diagonal element 
+of $(\Sigma_k)_{k\in\mathbb{N}}$ to converge. Since we want $X_k$ to 
+converge to $U = PQ^*$, we want each diagonal element to converge to 1. 
+
+We consider the real sequence $(x_k)_{k \in \mathbb{N}}$ defined by the 
+recurrence relation
+\begin{align}
+	x_{k+1} = p(x_k), \qquad x_0 \geq 0, \qquad p(x) \coloneqq 
+	\frac{1}{2} (3x - x^3),
+\end{align}
+where the condition $x_0 \geq 0$ is motivated by the singular values of 
+$A$.
+
+We first note that $p$ is an odd function with roots at 0, $\pm\sqrt{3}$
+and local maxima at $\pm1$ ($p(\pm1) = \pm1$).
+Since the leading coefficient of $p$ is negative, $p$ is positive on 
+$[0,\sqrt{3}]$ and negative on $[\sqrt{3}, \infty)$. We now study the 
+convergence of $(x_k)$ for different values of $x_0$.
+\begin{itemize}
+	\item For $x_0 = 0$ or $\sqrt{3}$, $x_0$ is a root of $p$ so $x_k 
+	\to 0$ as $k \to \infty$.
+	\item For $0 < x_0 \leq 1$, $p(0,1) = (0, 1)$ and $p(x) > x$  on 
+	$(0, 1)$ so $x_k \to 1$ as $k \to \infty$.
+	\item For $1 < x_0 < \sqrt{3}$, $p(x_0) \in (0,1)$ so $x_n = 
+	p^n(x_0) = p^{n-1}(p(x_0)) \to 1$ as $k \to \infty$.
+	\item For $x_0 > \sqrt{3}$, $p(x_0)$ is negative so we cannot 
+	guarantee convergence to 1. It is easy to show that for $x_0 \geq 
+	\sqrt{5}$ the iteration diverges, since $|p(x)| \geq x$ and $p$ is 
+	unbounded for $|x| \geq \sqrt{5}$.
+\end{itemize}
+Therefore, every diagonal sequence converges to 1 if $0 < \sigma_i < 
+\sqrt{3}$ for $i = 1:\rank(A)$, or equivalently $\|A\|_2 < \sqrt{3}$ 
+and $A$ is full rank.
+
+It follows that for a starting matrix $A$ with full rank and $\|A\|_2 < 
+\sqrt{3}$,
+\begin{align}
+	\|U-X_{k+1}\|_2 &= \left\|PQ^* - P\left[\frac{1}{2}(3 \Sigma_k
+	-\Sigma_k^3)\right] Q^*\right\|_2
+	= \left\|I - \frac{1}{2}(3\Sigma_k - \Sigma_k^3)\right\|_2 \\
+	&= \max_{i = 1:n} \left|1 - \frac{1}{2}\left(3 \sigma_i^{(k)} - 
+	(\sigma_i^{(k)})^3\right)\right|,
+\end{align}
+which tends to 0 as $k \to \infty$.
 
 \vspace{0.2cm}
 \begin{enumerate}
@@ -267,15 +332,15 @@ We first consider the $k$th step $X_{k+1} = (X_k + X_k^{-*})/2\,$ for
 the Newton iteration of a matrix $A \in \mathbb{C}^{n\times n}$. We 
 identify 3 main operations:
 \begin{itemize}
-	\item One matrix inversion of $X_k \in \mathbb{C}^{n \times n}$: 
+	\item One matrix inversion of $X_k \in \mathbb{C}^{\nxn}$: 
 	\hfill
 	$2n^3 + O(n^2)$ flops
 	
-	\item One matrix addition in $\mathbb{C}^{n \times n}$:
+	\item One matrix addition in $\mathbb{C}^{\nxn}$:
 	\hfill
 	$n^2$ flops
 	
-	\item One element-wise division in $\mathbb{C}^{n \times n}$:
+	\item One element-wise division in $\mathbb{C}^{\nxn}$:
 	\hfill
 	$n^2$ flops
 \end{itemize}
@@ -283,9 +348,9 @@ So the total number of operations for the Newton method is $2n^3 +
 O(n^2)$.
 
 We now consider a step of the Newton-Schulz iteration $X_k(3I - 
-X_k^*X_K)/2$ for $X_0 = A \in \mathbb{C}^{m \times n}$.
+X_k^*X_K)/2$ for $X_0 = A \in \mathbb{C}^{\mxn}$.
 We fist note that $X_k^*X_k$, and by extension $(3I - X_K^*X_k)/2$, is 
-Hermitian in $\mathbb{C}^{n \times n}$.
+Hermitian in $\mathbb{C}^{\nxn}$.
 Therefore only the upper triangular elements of these matrices need to 
 be calculated, ie we only have to compute $\sum_{k=1}^{n} k= (n^2+n)/2$ 
 components.
@@ -311,7 +376,20 @@ dividing the result by 2 adds $n^2 + n$ operations. Finally multiplying
 by $X_k$ takes $2mn^2$ flops for a total of $3mn^2 + O(n^2) + O(mn)$ 
 flops per step.
 
+\begin{enumerate}
+	\setcounter{enumi}{8}
+	\item Write a MATLAB M-file {\consoleFont poldec} that computes the 
+	polar decomposition of a nonsingular $A \in \mathbb{C}^{\nxn}$.
+\end{enumerate}
 
+We wrote the MATLAB function {\consoleFont poldec} (see {\consoleFont 
+poldec.m} in the github repository 
+\emph{https://github.com/ThomasSeleiro/PolarDecompProj})
+that computes the polar decomposition of a matrix $A$.
+
+The Newton method from~(\ref{eq:newton}) is used until the condition 
+$\|X_k\|_2 < \sqrt{3}\,$ is met, at which point we use the 
+Newton-Schulz method, since it is guaranteed to converge.
 
 \bibliography{mybib}
 \bibliographystyle{plain}
