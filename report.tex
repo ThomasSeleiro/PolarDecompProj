@@ -5,7 +5,9 @@
 \usepackage{amsthm}
 \usepackage{mathtools}
 \usepackage[linesnumbered,ruled]{algorithm2e}
-%\usepackage{fancyvrb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{subcaption}
 
 \usepackage{natbib}
 \setcitestyle{numbers, square}
@@ -54,6 +56,9 @@ $Q$ is orthogonal. Thus the diagonal values of $\Sigma$ are the
 eigenvalues of $H$, which are the singular values of $A$.
 
 
+
+
+
 \vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{2}
@@ -91,6 +96,9 @@ Therefore $H = P\Sigma P^*$ and
 	HU = (P\Sigma P^*) (PQ^*) = P \Sigma Q^* = A = UH
 \end{align}
 by the properties of the SVD of $A$. Therefore $U$ and $H$ commute.
+ 
+ 
+ 
  
 
 \vspace{0.2cm}
@@ -139,6 +147,9 @@ using~[\citealp{jeda2008}, 4.2.4.4]. So the right-hand side of
 \end{align}
 
 
+
+
+
 \vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{4}
@@ -181,6 +192,9 @@ gives
 	X_{k+1} &= \frac{1}{2} \, (X_k + X_k^{-*})
 	\label{eq:newton}
 \end{align}
+
+
+
 
 
 \vspace{0.2cm}
@@ -245,6 +259,8 @@ constant. We do so by observing that
 and so for all $k$, $\|X_k\|_2 \leq M \coloneqq \max\{\|A\|_2, 
 \|A^{-1}\|_2\}$.
 Thus we conclude that the Newton method converges quadratically.
+
+
 
 
 
@@ -318,6 +334,10 @@ It follows that for a starting matrix $A$ with full rank and $\|A\|_2 <
 \end{align}
 which tends to 0 as $k \to \infty$.
 
+
+
+
+
 \vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{7}
@@ -376,20 +396,219 @@ dividing the result by 2 adds $n^2 + n$ operations. Finally multiplying
 by $X_k$ takes $2mn^2$ flops for a total of $3mn^2 + O(n^2) + O(mn)$ 
 flops per step.
 
+
+
+
+
+
+
+\vspace{0.2cm}
 \begin{enumerate}
 	\setcounter{enumi}{8}
-	\item Write a MATLAB M-file {\consoleFont poldec} that computes the 
+	\item Write a MATLAB M-file \texttt{poldec} that computes the 
 	polar decomposition of a nonsingular $A \in \mathbb{C}^{\nxn}$.
 \end{enumerate}
 
-We wrote the MATLAB function {\consoleFont poldec} (see {\consoleFont 
-poldec.m} in the github repository 
+We wrote the MATLAB function \texttt{poldec} (see \texttt{poldec.m} in 
+the github repository 
 \emph{https://github.com/ThomasSeleiro/PolarDecompProj})
 that computes the polar decomposition of a matrix $A$.
 
-The Newton method from~(\ref{eq:newton}) is used until the condition 
-$\|X_k\|_2 < \sqrt{3}\,$ is met, at which point we use the 
-Newton-Schulz method, since it is guaranteed to converge.
+The two variables \texttt{newtSchulz} and \texttt{converged} control 
+the function's operation.
+The function starts by computing $U$ using the Newton's method, until
+the condition $\|X_k\|_2 < \sqrt{3}$ stored in \texttt{newtSchulz} 
+turns true. 
+From this point onwards, the function begins 
+using the {Newton-Schulz} iteration to calculate $U$.
+
+The function stops iterating once the variable
+\begin{verbatim}
+	converged = (unitDist <= 1e-16) || (iterDist <= 1e-16);
+\end{verbatim}
+becomes true.
+Here \texttt{unitDist} stores the value $\|I -X_k^*X_k\|_\infty$ and 
+\texttt{iterDist} stores $\|X_k - X_{k-1} \|_\infty / \|X_k\|_\infty$.
+We motivate this choice for convergence by noting that if either 
+distance is of the order of the unit roundoff $u = 10^{-16}$, the 
+iterates stop gaining precision in double floating point arithmetic.
+For example, if \texttt{unitDist} $< u$, the matrix $X_k$ is unitary to 
+machine precision. Similarly, if \texttt{iterDist} $< u$, the iterates 
+$X_k$ and $X_{k-1}$ are sufficiently close in double precision floating 
+point arithmetic, and any subsequent iterates will be close to $X_k$.
+Note that a maximum number of 1000 iterates per computation was set to 
+avoid long computation times if the algorithm doesn't manage to reduce 
+\texttt{unitDist} or \texttt{iterDist} enough.
+
+Once $U$ is calculated, we simply form $H = U^*A$ to output the full 
+polar decomposition.
+
+
+
+\begin{figure}[t]
+	\centering
+	\begin{subfigure}{0.5\textwidth}
+		\centering
+		\includegraphics[width=.8\linewidth]{randnIts.pdf}
+		\caption{\label{fig:randnIts}}
+	\end{subfigure}%
+	\begin{subfigure}{0.5\textwidth}
+		\centering
+		\includegraphics[width=.8\linewidth]{randnAccuracy.pdf}
+		\caption{\label{fig:randnAccuracy}}
+	\end{subfigure}
+	\caption{
+	Figure showing (a) the number of iterations and 
+	(b) the accuracy of the polar decomposition of 
+	\texttt{rand(n)} computed using the Newton method only, and the 
+	\texttt{poldec} function. Note in (a) that the Newton only method 
+	quickly reaches the maximum allowed number of iterations at $n = 
+	11$.
+	\label{fig:randn}}
+\end{figure}
+We first tested the implementation of \texttt{poldec} by using random 
+matrices of size $n$ using the MATLAB function \texttt{rand(n)}. The 
+results of these experiments are summarised in Fig.~\ref{fig:randn}.
+We note that \texttt{poldec} which uses the Newton-Schulz iteration 
+converges significantly quicker and produces a more accurate result.
+Quicker convergence for the Newton method could be achieved by using 
+more lenient convergence criteria, but this would likely lead 
+to decreased accuracy of the computed decomposition. 
+
+\begin{table*}[h]
+	\centering
+	\begin{tabular}{ l c c c c c }
+		\toprule
+		& & \multicolumn{2}{c}{\texttt{its}} & 
+		\multicolumn{2}{c}{$\|A-UH\|_2$} \\
+		\cmidrule(lr){3-4} \cmidrule(lr{12pt}){5-6}
+		$A$ & $\kappa_2(A)$ & Newton only & \texttt{poldec} & Newton only 
+		& 
+		\texttt{poldec} \\
+		\midrule
+		\texttt{eye(8)} & 1 & 1 & 1 & 0 & 0 \\
+		\texttt{hilb(6)} & 1.5e07 & 28 & 31 & 0 & 1.9230e-16 \\
+		\texttt{magic(6)} & 4.7e16 & 68 & 60 & 1.8465e-14 & 
+		1.4991e-14 \\
+		\texttt{hadamard(8)} & 1 & 124 & 12 & 8.1113e-16 & 7.0890e-16\\
+		\bottomrule
+	\end{tabular}
+	\caption{
+	Results of experiments applying \texttt{poldec} 
+	to	various matrices. A variant of the function that only uses the 
+	Newton method was also used for comparison. Results obtained by 
+	running \texttt{otherTest.m}
+	\label{tab:poldecresults}}
+\end{table*}
+
+Table~\ref{tab:poldecresults} shows metrics related to computing the 
+polar decomposition of a few specific matrices using \texttt{poldec} 
+and a function using only the Newton method.
+
+We see that only one iteration is needed for the identity matrix 
+\texttt{eye(8)} since it is already unitary.
+
+Using \texttt{hilb(6)} as input illustrates the case when A is hermitian 
+positive definite.
+It is clear in this case that $U = I$ since $H$ is a hermitian positive 
+definite matrix.
+However, both algorithms take a long time to compute $U$ since they are 
+unable to make these deductions. Since $U= I$ however, the 
+result is accurate to machine precision.
+
+The function takes a relatively large number of iterations to find the 
+polar decomposition of \texttt{magic(6)}. We note that for any matrix $A$,
+$$M \coloneqq \max \left\{\|A\|_2, \|A^{-1}\|_2 \right\} \geq 
+\kappa_2(A)^{1/2}.$$
+Since for the Newton method
+$$\|U - X_{k+1}\|_2 \leq \frac{M}{2} \|U - X_k\|_2^2,$$
+for large values of $M$ convergence will be slow.
+This explains the larger number of iterations for both \texttt{hilb(6)} 
+and \texttt{magic(6)}.
+
+For the computation of the polar decomposition of \texttt{hadamard(8)}, 
+we achieve good accuracy and a small number of iterations using the 
+\texttt{poldec} function. For the Newton method only, while the 
+iterations did not achieve the convergence criterion, both 
+\texttt{iterDist} and \texttt{unitDist} rapidly decrease past 
+$10^{-15}$ but keep fluctuating for a long time before one eventually 
+drops below $10^{-16}$. The output of the Newton only script is shown 
+below.
+\begin{verbatim}
+k   	 |X_k-X_{k-1}|/|X_k|   |I - X_k^*X_k|
+=== 	    ==============     ==============
+                    [...]
+5	       1.46536674e-05	    2.14730583e-10
+6	       1.07365042e-10	    9.33334681e-16
+7	       4.31775426e-16	    1.54939455e-15
+8	       5.49532361e-16	    1.51620177e-15
+                    [...]
+121	     2.35513869e-16	    6.09764714e-16
+122	     2.15887713e-16	    6.08974934e-16
+123      1.17756934e-16	    5.84808662e-16
+124      7.85046229e-17	    5.59620674e-16
+\end{verbatim}
+
+We also compared the runtime of \texttt{poldec} and a simple Newton's 
+method over the same number of iterates (taken from the number of 
+iterates required for the Newton only iteration to converge).
+\begin{table*}[t]
+	\centering
+	\begin{tabular}{ l c c c }
+		\toprule
+		& &\multicolumn{2}{c}{Runtime (in ms)} \\
+		\cmidrule(lr){3-4}
+		$A$ & \texttt{its} & Newton only & \texttt{poldec} \\
+		\midrule
+		\texttt{rand(8)}     & 12   & 1.574  & 1.166  \\
+		\texttt{rand(20)}    & 1000 & 78.362 & 52.129 \\
+		\texttt{hilb(6)}     & 28   & 1.513  & 1.608  \\
+		\texttt{magic(6)}    & 68   & 7.951  & 3.248  \\
+		\texttt{hadamard(8)} & 124  & 10.857 & 4.799  \\
+		\bottomrule
+	\end{tabular}
+	\caption{
+	Runtimes when calculating the Polar Decomposition using 
+	Newton's method and the function \texttt{poldec}. Results obtained 
+	by running \texttt{speedTest.m}
+	\label{tab:runtimes}}
+\end{table*}
+Table~\ref{tab:runtimes} shows the times taken to compute the polar 
+decompositions of some of the matrices. Overall the computation time 
+remains lower in most cases for the \texttt{poldec} function.
+This suggests that thanks the matrix multiplication implementation is 
+much faster than matrix inversion, as mentioned in Question 8.
+
+
+
+
+
+\vspace{0.2cm}
+\begin{enumerate}
+	\setcounter{enumi}{9}
+	\item Write another routine that computes the square root of a 
+	Hermitian positive definite matrix by doing a Cholesky 
+	decomposition and calling \texttt{poldec}.
+\end{enumerate}
+
+For any Hermitian positive definite matrix $A \in \mathbb{C}^{\nxn}$, 
+we can compute the unique Cholesky factorization $A = R^*R$, where $R 
+\in \mathbb{C}^{\nxn}$ is an upper-triangular matrix with strictly 
+positive diagonal values.
+Since the Cholesky factor is full rank, we can compute its polar 
+decomposition $R = UH$ with $U$ unitary and $H$ hermitian positive 
+definite.
+Using this decomposition, we get $$A = R^*R = (UH)^*UH = H^2.$$
+Hence $H$ is the matrix square root of $A$.
+
+We implemented the discussed method for calculating square roots in the 
+function \texttt{poldecsqrt} (in the \texttt{.m} file of the same name).
+We used the MATLAB function \texttt{chol} to calculate the Cholesky 
+factor \texttt{R} of the input matrix \texttt{A}.
+\texttt{poldec} is then used to find the Hermitian factor \texttt{H} of 
+\texttt{R}. Note the function raises an error if the input matrix is 
+not Hermitian positive definite.
+
 
 \bibliography{mybib}
 \bibliographystyle{plain}
