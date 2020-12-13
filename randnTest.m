@@ -1,21 +1,27 @@
-x = 5:100;
-numTests = 3;
-itArray = [];
-accuracyArray = [];
+x = 5:2:100;
+numTests = 5;
+itArray = zeros(2,size(x,2));
+accuracyArray = zeros(2,size(x,2));
 for n=x
-    acc = 0;
-    its = 0;
+    i = n - x(1) + 1;
     for k=1:numTests
         A = rand(n);
+        [U, H, tempIts] = poldecTest(A, "n", [1e-16 1e-16]);
+        itArray(1,i) = itArray(1,i) + tempIts;
+        accuracyArray(1,i) = accuracyArray(1,i) + norm(A-U*H,2);
         [U, H, tempIts] = poldecTest(A, "h", [1e-16 1e-16]);
-        acc = acc + norm(A-U*H, 2);
-        its = its + tempIts;
+        itArray(2,i) = itArray(2,i) + tempIts;
+        accuracyArray(2,i) = accuracyArray(2,i) + norm(A-U*H,2);
     end
-    itArray = [itArray its/numTests];
-    accuracyArray = [accuracyArray acc/numTests];
+    itArray(:,i) = itArray(:,i) ./ numTests;
+    accuracyArray(:,i) = accuracyArray(:,i) ./ numTests;
 end
 
-plot(x, accuracyArray, "Marker", "s", "MarkerFaceColor", 'b');
+clf
+hold on
+plot(x, accuracyArray(1,:), "color", "b", "Marker", "s", "MarkerFaceColor", 'b');
+plot(x, accuracyArray(2,:), "color", "r", "Marker", "o", "MarkerFaceColor", "r");
+hold off
 
 function [U, H, its] = poldecTest(A, type, conv)
     hybrid = true;
