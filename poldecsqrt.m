@@ -8,7 +8,7 @@ function H = poldecsqrt(A)
     % Compute the Cholesky factor of A
     [R, flag] = chol(A);
     if flag ~= 0
-        error("The input matrix is not Hermitian Positive Definite");
+        error("The input matrix is not Hermitian positive definite");
     end
 
     % Compute the Polar Decomposition of R, return H
