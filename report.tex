@@ -29,7 +29,11 @@
 \begin{document}
 
 \title{Polar Decomposition}
-\author{Thomas Seleiro}
+\author{Thomas Seleiro\thanks
+	{Department of Mathematics, University of Manchester, 
+	Manchester, M13 9PL, UK
+	(\texttt{thomas.seleiro@postgrad.manchester.ac.uk})}}
+\date{December 15, 2020}
 \maketitle
 
 
@@ -44,7 +48,7 @@ a thin singular value decomposition $A = P \Sigma Q^*$ where $P \in
 \mathbb{C}^{\nxn}$ is unitary, and $\Sigma \in 
 \mathbb{C}^{\nxn}$ is diagonal with $\Sigma = \diag(\sigma_1, 
 \ldots, \sigma_r)$ where $\rank(A) = r$. The coefficients $\sigma_1 
-\geq \ldots \geq \sigma_r \geq 0$ are the singular values of $A$.
+\geq \cdots \geq \sigma_r \geq 0$ are the singular values of $A$.
 
 We can write
 \begin{align}
@@ -52,9 +56,9 @@ We can write
 	\label{eq:PolarSVD}
 \end{align}
 where $U$ and $H$ satisfy the properties of a polar decomposition.
-In particular we have $H = Q \Sigma Q^*$ where $\Sigma$ is diagonal and 
-$Q$ is unitary. Thus the diagonal values of $\Sigma$ are the 
-eigenvalues of $H$.
+In particular we have $H = Q \Sigma Q^*$ where $\Sigma$ is diagonal 
+with non-negative diagonal entries and $Q$ is unitary.
+Thus the diagonal values of $\Sigma$ are the eigenvalues of $H$.
 
 
 
@@ -69,11 +73,11 @@ eigenvalues of $H$.
 
 We first suppose that $U$ and $H$ commute. Note that for the product
 $HU$ to be well defined, we must have $m = n$, and hence
-$U\in\mathbb{C}$ is unitary. Since $A = UH = HU$ we get
+$U\in\mathbb{C}^\nxn$ is unitary. Since $A = UH = HU$ we get
 \begin{align}
 	\label{eq:AstarA}
 	A^*A &= (UH)^* (UH) = H^*(U^*U)H = H^2 \\
-	AA^* &= (HU) (HU)^* = H(UU^*)H^* = H^2
+	AA^* &= (HU) (HU)^* = H(UU^*)H^* = H^2 \nonumber
 \end{align}
 so $A$ is normal.
 
@@ -86,11 +90,12 @@ Using the singular value decomposition of $A$, we have
 \end{align}
 where $\Sigma^2 = \diag(\sigma_1^2, \ldots,\sigma_r^2)$.
 Equating (\ref{eq:AstarA}) and (\ref{eq:AAstar}), we get 
-$H^2 = P\Sigma^2P^*$. From~[\citealp{hojo1985}, p.405], we know 
+$H^2 = P\Sigma^2P^*$. From~[\citealp{hojo1985}, p. 405], we know 
 that there
 is a unique Hermitian positive semi-definite matrix $(AA^*)^{1/2}$ such 
 that $$(AA^*)^{1/2}(AA^*)^{1/2} = AA^* = H^2.$$
-It is clear that $H$ is the matrix square root of $A^*A$.
+It is clear that $H$ is the unique Hermitian positive semi-definite 
+matrix square root of $A^*A$.
 We also have that
 $$(P\Sigma P^*) (P\Sigma P^*) = P \Sigma^2P^* = AA^*.$$
 Therefore $H = P\Sigma P^*$ and
@@ -106,7 +111,7 @@ using $P^*P = I_n$. Therefore $U$ and $H$ commute.
 	\setcounter{enumi}{3}
 	\item Verify the formula
 	\begin{align*}
-		U = \frac{2}{\pi}A \int_{0}^{\infty} (t^2I - A^*A)^{-1}dt
+		U = \frac{2}{\pi}A \int_{0}^{\infty} (t^2I + A^*A)^{-1}dt
 		\tag{*}
 		\label{eq:Q4}
 	\end{align*}
@@ -130,7 +135,7 @@ $$
 Since $Q$ and $Q^*$ do not depend on $t$, they can be taken outside the 
 integral, leaving the right hand side of~(\ref{eq:Q4}) in the form
 $$
-	\frac{2}{\pi} A\, Q\int_{0}^{\infty}D^{-1}dt\, Q^*.
+	\frac{2}{\pi} A\, Q \left(\int_{0}^{\infty}D^{-1}dt\right) Q^*.
 $$
 The integral is a diagonal matrix where the $i$th diagonal component is
 $$
@@ -142,7 +147,7 @@ using~[\citealp{jeda2008}, 4.2.4.4]. So the right-hand side of
 (\ref{eq:Q4}) is
 $$
 	\frac{2}{\pi} A Q \left(\frac{\pi}{2} \Sigma^{-1}\right)Q^* = 
-	P\Sigma Q^* \, Q \Sigma^{-1}Q^* = PQ^* = U 
+	P\Sigma Q^* \, Q \Sigma^{-1}Q^* = PQ^* = U.
 $$
 
 
@@ -153,7 +158,7 @@ $$
 \begin{enumerate}
 	\setcounter{enumi}{4}
 	\item Derive Newton's method for computing U by considering
-	equations $(X+E)*(X+E) = I$, where $E$ is a ``small perturbation''.
+	equations $(X+E)^*(X+E) = I$, where $E$ is a ``small perturbation''.
 	(Newton's method is $X_{k+1} = (X_k + X_k^{-*})/2, X_0 = A$)
 \end{enumerate}
 
@@ -190,7 +195,7 @@ and skew Hermitian components respectively~[\citealp{hojo1985}, p.170].
 Setting the skew Hermitian part to zero, and taking $B = X_k^*X_{k+1}$ 
 gives
 $$ X_k^*X_{k+1} = \frac{1}{2} \, (X_k^*X_k + I).$$
-Assuming that $X_k$ (and by extension $A$) is invertible, 
+Assuming that $X_k$ (and by extension $A$) is non-singular, 
 left-multiplication by $X_k^{-*} = (X_k^{-1})^*$ yields the recursive 
 iteration equation for the desired Newton method:
 \begin{align}
@@ -222,7 +227,7 @@ gives
 	&= P_k \left[\frac{1}{2}(\Sigma_k + \Sigma_k^{-1})\right] Q_k^*
 \end{align*}
 So we can identify the factors in the SVD of $X_{k+1}$ with those of 
-$X_k$ (up toreordering of rows) and write 
+$X_k$ (up to reordering of rows) and write 
 $$X_k = P \Sigma_k Q^*,$$
 where $\Sigma_k$ is defined by the recurrence relation
 $$
@@ -315,8 +320,8 @@ $[0,\sqrt{3}]$ and negative on $[\sqrt{3}, \infty)$.
 
 We can study the convergence of $(x_k)$ for different values of $x_0$.
 \begin{itemize}
-	\item For $x_0 = 0$ or $\sqrt{3}$, $x_0$ is a root of $p$ so $x_k 
-	\to 0$ as $k \to \infty$.
+	\item For $x_0 = 0$ or $\sqrt{3}$, $x_0$ is a root of $p$ so
+	$x_k = 0$ for $k \geq 1$.
 	\item For $0 < x_0 \leq 1$, $p(0,1) = (0, 1)$ and $p(x) > x$  on 
 	$(0, 1)$ so $x_k \to 1$ as $k \to \infty$.
 	\item For $1 < x_0 < \sqrt{3}$, $p(x_0) \in (0,1)$ so $x_n = 
@@ -403,13 +408,13 @@ dividing the result by 2 adds $n^2 + n$ operations. Finally multiplying
 by $X_k$ takes $2mn^2$ flops for a total of $3mn^2 + O(n^2) + O(mn)$ 
 flops per step.
 
-We comparing both methods, assuming both require the same number of 
+We compare both methods, assuming both require the same number of 
 iterations to converge. 
 One step of the Newton iteration requires one matrix inversion, whereas 
 one step of the Newton-Schulz iteration requires two matrix 
 multiplications.
 Therefore, in order for the Newton-Schulz iterations to be quicker to 
-compute, we expect matrix multiplication to be twice as fast as matrix 
+compute, we need matrix multiplication to be twice as fast as matrix 
 inversion.
 Note that these considerations do not account for symmetry in the 
 Newton-Schulz iteration, which we consider to be implementation 
@@ -427,7 +432,7 @@ dependent.
 \end{enumerate}
 
 We wrote the MATLAB function \texttt{poldec} (see \texttt{poldec.m} in 
-the github repository 
+the GitHub repository 
 \emph{https://github.com/ThomasSeleiro/PolarDecompProj})
 that computes the polar decomposition of a matrix $A$.
 
@@ -481,7 +486,7 @@ polar decomposition.
 	\texttt{poldec} function. Note in (a) that the Newton only method 
 	quickly reaches the maximum allowed number of iterations at $n = 
 	11$. These results were obtained by running \texttt{randnTest.m}
-	\label{fig:randn}}
+	\label{fig:randn}.}
 \end{figure}
 We first tested the implementation of \texttt{poldec} by using random 
 matrices of size $n$ using the MATLAB function \texttt{rand(n)}. The 
@@ -514,7 +519,7 @@ to decreased accuracy of the computed decomposition.
 	Results of experiments applying \texttt{poldec} 
 	to	various matrices. A variant of the function that only uses the 
 	Newton method was also used for comparison. Results obtained by 
-	running \texttt{otherTest.m}
+	running \texttt{otherTest.m}.
 	\label{tab:poldecresults}}
 \end{table*}
 
@@ -587,7 +592,7 @@ iterates required for the Newton only iteration to converge).
 	\caption{
 	Runtimes when calculating the Polar Decomposition using 
 	Newton's method and the function \texttt{poldec}. Results obtained 
-	by running \texttt{speedTest.m}
+	by running \texttt{speedTest.m}.
 	\label{tab:runtimes}}
 \end{table*}
 Table~\ref{tab:runtimes} shows the times taken to compute the polar 
