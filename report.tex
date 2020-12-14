@@ -43,17 +43,18 @@ a thin singular value decomposition $A = P \Sigma Q^*$ where $P \in
 \mathbb{C}^{\mxn}$ has orthogonal columns, $Q \in 
 \mathbb{C}^{\nxn}$ is unitary, and $\Sigma \in 
 \mathbb{C}^{\nxn}$ is diagonal with $\Sigma = \diag(\sigma_1, 
-\ldots, \sigma_r)$ where $\rank(A) = r$ and $\sigma_1 \geq \ldots \geq
-\sigma_r \geq 0$, the singular values of $A$. Thus we can write
+\ldots, \sigma_r)$ where $\rank(A) = r$. The coefficients $\sigma_1 
+\geq \ldots \geq \sigma_r \geq 0$ are the singular values of $A$.
+
+We can write
 \begin{align}
-	A = (PQ^*) (Q \Sigma Q^*) \eqqcolon UH
+	A = (PQ^*) (Q \Sigma Q^*) \eqqcolon UH,
 	\label{eq:PolarSVD}
 \end{align}
 where $U$ and $H$ satisfy the properties of a polar decomposition.
-
 In particular we have $H = Q \Sigma Q^*$ where $\Sigma$ is diagonal and 
-$Q$ is orthogonal. Thus the diagonal values of $\Sigma$ are the 
-eigenvalues of $H$, which are the singular values of $A$.
+$Q$ is unitary. Thus the diagonal values of $\Sigma$ are the 
+eigenvalues of $H$.
 
 
 
@@ -67,7 +68,7 @@ eigenvalues of $H$, which are the singular values of $A$.
 \end{enumerate}
 
 We first suppose that $U$ and $H$ commute. Note that for the product
-$HU$ to be well defined, we must have $m = n$ which implies
+$HU$ to be well defined, we must have $m = n$, and hence
 $U\in\mathbb{C}$ is unitary. Since $A = UH = HU$ we get
 \begin{align}
 	\label{eq:AstarA}
@@ -77,7 +78,7 @@ $U\in\mathbb{C}$ is unitary. Since $A = UH = HU$ we get
 so $A$ is normal.
 
 Now suppose $A$ is normal. Since $A^*A \in \mathbb{C}^{n\times n}$ and
-$AA^* \in \mathbb{C}^{\mxm}$, $A$ normal requires $m=n$.
+$AA^* \in \mathbb{C}^{\mxm}$, normality of $A$ requires $m=n$.
 Using the singular value decomposition of $A$, we have
 \begin{align}
 	AA^* = (P\Sigma Q^*) (Q\Sigma P^*) = P\Sigma^2 P^*
@@ -88,14 +89,13 @@ Equating (\ref{eq:AstarA}) and (\ref{eq:AAstar}), we get
 $H^2 = P\Sigma^2P^*$. From~[\citealp{hojo1985}, p.405], we know 
 that there
 is a unique Hermitian positive semi-definite matrix $(AA^*)^{1/2}$ such 
-that $(AA^*)^{1/2}(AA^*)^{1/2} = AA^* = H^2$.
-It is obvious by its construction that $H$ is said matrix, but we also
-note that $(P\Sigma P^*) (P\Sigma P^*) = P \Sigma^2P^* = AA^*$.
+that $$(AA^*)^{1/2}(AA^*)^{1/2} = AA^* = H^2.$$
+It is clear that $H$ is the matrix square root of $A^*A$.
+We also have that
+$$(P\Sigma P^*) (P\Sigma P^*) = P \Sigma^2P^* = AA^*.$$
 Therefore $H = P\Sigma P^*$ and
-\begin{align}
-	HU = (P\Sigma P^*) (PQ^*) = P \Sigma Q^* = A = UH
-\end{align}
-by the properties of the SVD of $A$. Therefore $U$ and $H$ commute.
+$$HU = (P\Sigma P^*) (PQ^*) = P \Sigma Q^* = A = UH,$$
+using $P^*P = I_n$. Therefore $U$ and $H$ commute.
  
  
  
@@ -114,37 +114,36 @@ by the properties of the SVD of $A$. Therefore $U$ and $H$ commute.
 	of $A$ to diagonalize the formula.
 \end{enumerate}
 
-Since $A^*A = (Q\Sigma P^*)(P\Sigma Q^*) = Q\Sigma^2Q^*$, we have
+Suppose $A$ is full rank. Then the singular values of $A$ are strictly 
+positive. Since $A^*A = (Q\Sigma P^*)(P\Sigma Q^*) = Q\Sigma^2Q^*$, we 
+have
 \begin{align}
-	t^2I + A^*A = Q(t^2I)Q^* + Q \Sigma^2Q^* = QDQ^*
+	t^2I + A^*A = Q(t^2I)Q^* + Q \Sigma^2Q^* = QDQ^*,
 	\label{eq:Q4eq1}
 \end{align}
-where $D \coloneqq \diag(t^2 + \sigma_i)$.
+where $D \coloneqq \diag(t^2 + \sigma_i)$ is an $\nxn$ matrix.
 Inverting (\ref{eq:Q4eq1}) gives
-\begin{align}
+$$
 	(t^2I + A^*A)^{-1} = QD^{-1}Q^*, \qquad
-	D^{-1} = \diag\left(\frac{1}{\sigma_i^2 + t^2} \right)
-\end{align}
+	D^{-1} = \diag\left(\frac{1}{\sigma_i^2 + t^2} \right).
+$$
 Since $Q$ and $Q^*$ do not depend on $t$, they can be taken outside the 
 integral, leaving the right hand side of~(\ref{eq:Q4}) in the form
-\begin{align}
+$$
 	\frac{2}{\pi} A\, Q\int_{0}^{\infty}D^{-1}dt\, Q^*.
-\end{align}
+$$
 The integral is a diagonal matrix where the $i$th diagonal component is
-\begin{align}
+$$
 	\int_{0}^{\infty} \frac{1}{\sigma_i^2 + t^2} \, dt =
 	\left[\frac{1}{\sigma_i} \arctan \left(\frac{t}{\sigma_i}\right)
-	\right]_0^{\infty} = \frac{\pi}{2\sigma_i}
-\end{align}
+	\right]_0^{\infty} = \frac{\pi}{2\sigma_i},
+$$
 using~[\citealp{jeda2008}, 4.2.4.4]. So the right-hand side of 
 (\ref{eq:Q4}) is
-\begin{align}
-	\begin{split}
-	A\,Q\diag\left(\sigma_i^{-1}\right)Q^*&=
+$$
+	\frac{2}{\pi} A Q \left(\frac{\pi}{2} \Sigma^{-1}\right)Q^* = 
 	P\Sigma Q^* \, Q \Sigma^{-1}Q^* = PQ^* = U 
-%	\Sigma^{-1} isn't necessarily well defined
-	\end{split}
-\end{align}
+$$
 
 
 
@@ -159,37 +158,43 @@ using~[\citealp{jeda2008}, 4.2.4.4]. So the right-hand side of
 \end{enumerate}
 
 We know that $U$ is the closest unitary matrix to $A$, and since 
-$U^*U=I$, we try to find a solution to the equation
-\begin{align}
+$U^*U=I$, we want to find a solution to the equation
+$$
 	F(X) = 0,\qquad F(X)\coloneqq X^*X - I
-\end{align}
+$$
 using a Newton method starting at $A$.
-The general form of the Newton method [\cite{Kell2003}, p.] is
+The general form of the Newton method~{[\citealp{Kell2003},~p.2]} is
 \begin{align}
-	F(X_{k+1}) + DF_{X_k} \left[X_{k+1} - X_k\right] = 0
+	F(X_{k+1}) + DF_{X_k} \left[X_{k+1} - X_k\right] = 0,
 	\label{eq:genNewt}
 \end{align}
 where $DF_{X_k}$ is the Fréchet derivative and, is the first order $E$ 
 term in
-\begin{align}
+$$
 	F(X+E) - F(X) = X^*E + E^*X + E^*E.
-\end{align}
-So $DF_{X_k}[E] = X^*E + E^*X$. Substituting in~(\ref{eq:genNewt}),
-\begin{align}
+$$
+So $DF_{X_k}[E] = X^*E + E^*X$.
+Substituting in~(\ref{eq:genNewt}),
+$$
 	X_k^*X_k - I + X_k^* \left( X_{k+1} - X_k \right) + 
-		\left( X_{k+1}^* - X_k^* \right)X_k &= 0 \\
-	X_k^*X_k - I + X_k^* X_{k+1} - X_k^* X_k + 
-		X_{k+1}^* X_k - X_k^*  X_k &= 0 \\
-	X_k^* X_{k+1} + X_{k+1}^*X_k &= X_k^* X_k + I
-\end{align}
+		\left( X_{k+1}^* - X_k^* \right)X_k = 0.
+$$
+Eliminating $X_k^*X_k$ terms,
+$$
+	X_k^* X_{k+1} + X_{k+1}^*X_k = X_k^* X_k + I.
+$$
+
 We know that for any matrix we can write $B = 1/2(B + B^*) + 
 1/2(B-B^*)$, where the terms on the right-hand side are the Hermitian 
-and skew Hermitian components respectively [\citealp{hojo1985}, p.170].
+and skew Hermitian components respectively~[\citealp{hojo1985}, p.170].
 Setting the skew Hermitian part to zero, and taking $B = X_k^*X_{k+1}$ 
 gives
+$$ X_k^*X_{k+1} = \frac{1}{2} \, (X_k^*X_k + I).$$
+Assuming that $X_k$ (and by extension $A$) is invertible, 
+left-multiplication by $X_k^{-*} = (X_k^{-1})^*$ yields the recursive 
+iteration equation for the desired Newton method:
 \begin{align}
-	X_k^*X_{k+1} &= \frac{1}{2} \, (X_k^*X_k + I) \\
-	X_{k+1} &= \frac{1}{2} \, (X_k + X_k^{-*})
+	X_{k+1} &= \frac{1}{2} \, (X_k + X_k^{-*}).
 	\label{eq:newton}
 \end{align}
 
@@ -207,56 +212,55 @@ gives
 For the Newton iteration to be well defined, we require that $A$ and 
 the iterates $X_k$ be invertible.
 
-We have the SVD of $A = P\Sigma Q^*$ and $U = PQ^*$.
+We have the SVD of $A$ given by $A = P\Sigma Q^*$, and $U = PQ^*$.
 The iterates $X_k$ also have a singular value decomposition, which we 
 write $X_k=P_k \Sigma_k Q_k^*$. Using this in eq.~(\ref{eq:newton}) 
 gives
-\begin{align}
+\begin{align*}
 	X_{k+1} = (X_k + X_k^{-*})/2 &= \frac{1}{2} (P_k \Sigma_k Q_k^* + 
 	P_k \Sigma_k^{-1} Q_k^*)\\
-	&= P_k \frac{1}{2}(\Sigma_k + \Sigma_k^{-1}) Q_k^*
-\end{align}
-So we can identify the factors in the SVD of $X_{k+1}$ (up to 
-reordering of rows) and get 
-\begin{align}
-	P_k = P, \qquad Q_k = Q, \qquad \Sigma_{k+1} = \frac{1}{2}
-	\left(\Sigma_k + \Sigma_k^{-1} \right)
-\end{align}
+	&= P_k \left[\frac{1}{2}(\Sigma_k + \Sigma_k^{-1})\right] Q_k^*
+\end{align*}
+So we can identify the factors in the SVD of $X_{k+1}$ with those of 
+$X_k$ (up toreordering of rows) and write 
+$$X_k = P \Sigma_k Q^*,$$
+where $\Sigma_k$ is defined by the recurrence relation
+$$
+	\Sigma_{k+1} = \frac{1}{2} \left(\Sigma_k + \Sigma_k^{-1} \right).
+$$
 
 We now have
-\begin{align}
+\begin{align*}
 	U - X_{k+1} &= PQ^* - P\left[\frac{1}{2}
 	\left(\Sigma_k + \Sigma_k^{-1}\right)\right] Q^* \\
 	&= \frac{1}{2} P \left[\left(I - \Sigma_k\right) + 
-	\left(I - \Sigma_k^{-1}\right) \right] Q^* \\
-\end{align}
-And since
-\begin{align}
-	- \Sigma_k^{-1} (I - \Sigma_k)^2 &= -\Sigma_k^{-1}
-	\left(I - 2 \Sigma_k + \Sigma_k^2\right) \\
-	&= 2I -\Sigma_k - \Sigma_k^{-1}
-\end{align}
-we are left with $U - X_{k+1} = -P \Sigma_k^{-1} \left( I - \Sigma_k
-\right)^2 Q^* /2$.
+	\left(I - \Sigma_k^{-1}\right) \right] Q^*.
+\end{align*}
+Since
+$$
+	- \Sigma_k^{-1} (I - \Sigma_k)^2 = 2I -\Sigma_k - \Sigma_k^{-1},
+$$
+we are left with $$U - X_{k+1} = -\frac{1}{2} P \Sigma_k^{-1} 
+\left( I - \Sigma_k \right)^2 Q^*.$$
 Taking the 2-norm on both sides and exploiting the fact that $P$ and 
 $Q$ are orthogonal,
-\begin{align}
+\begin{align*}
 	\| U - X_{k+1} \|_2 &\leq \frac{1}{2}\, \left\| P\Sigma_k^{-1} 
 	\right\|_2 \left\| (I - \Sigma_k)^2 Q^*\right\|_2 \\
 	&= \frac{1}{2}\, \left\|\Sigma_k^{-1}\right\|_2 \left\| \left( I - 
 	\Sigma_k \right)^2 \right\|_2 \\
 	&\leq \frac{1}{2}\, \|X_k\|_2 \|I - \Sigma_k\|_2^2 \\
 	&= \frac{1}{2}\, \|X_k\|_2 \|U - X_k\|_2^2
-\end{align}
+\end{align*}
 
-To achieve quadratic convergence, we need to bound $\|X_k\|$ by a 
+To achieve convergence, we need to bound $\|X_k\|$ by a 
 constant. We do so by observing that
-\begin{align}
+$$
 	\|X_{k+1}\|_2 = \max_{i = 1:n} \frac{\sigma_i + \sigma_i^{-1}}{2}
 	\leq \max \left\{ \left\|X_k \right\|_2
-	, \left\|X_k^{-1} \right\|_2 \right\}
-\end{align}
-and so for all $k$, $\|X_k\|_2 \leq M \coloneqq \max\{\|A\|_2, 
+	, \left\|X_k^{-1} \right\|_2 \right\}.
+$$
+So for all $k$, $\|X_k\|_2 \leq M \coloneqq \max\{\|A\|_2, 
 \|A^{-1}\|_2\}$.
 Thus we conclude that the Newton method converges quadratically.
 
@@ -276,37 +280,40 @@ Thus we conclude that the Newton method converges quadratically.
 
 We assume $A \in \mathbb{C}^{\mxn}$ and $m\geq n$. We replace $A$ in 
 the expression of $X_1$ with the thin SVD $A = P \Sigma Q^*$ and get
-\begin{align}
-	X_1 = \frac{1}{2}P \Sigma Q^*(3I - Q\Sigma P^* P \Sigma Q^*)
+\begin{align*}
+	X_1 = \frac{1}{2}P \Sigma Q^*
+	\left(3I - (Q\Sigma P^*) (P \Sigma Q^*)\right)
 	   &= \frac{1}{2} P \Sigma (Q^* Q) (3I - \Sigma^2) Q^* \\
 	   &= P \left[ \frac{1}{2} (3\Sigma - \Sigma^3) \right] Q^*.
-\end{align}
+\end{align*}
 Thus we can write $X_1 = P \Sigma_1 Q^*$ where $\Sigma_1 = (3\Sigma - 
 \Sigma^3)/2$.
 Applying the same method recursively we can write $X_k = P\Sigma_k Q^*$ 
 with
-\begin{align}
+$$
 \Sigma_k = \diag(\sigma_i^{(k)}), \qquad \Sigma_{k+1} = \diag
 (3\sigma_i^{(k)} - (\sigma_i^{(k)})^3).
-\end{align}
+$$
+
 In order for the method to converge, we require every diagonal element 
 of $(\Sigma_k)_{k\in\mathbb{N}}$ to converge. Since we want $X_k$ to 
 converge to $U = PQ^*$, we want each diagonal element to converge to 1. 
 
 We consider the real sequence $(x_k)_{k \in \mathbb{N}}$ defined by the 
 recurrence relation
-\begin{align}
+$$
 	x_{k+1} = p(x_k), \qquad x_0 \geq 0, \qquad p(x) \coloneqq 
 	\frac{1}{2} (3x - x^3),
-\end{align}
-where the condition $x_0 \geq 0$ is motivated by the singular values of 
-$A$.
+$$
+where the condition $x_0 \geq 0$ is motivated by fact that the 
+singular values of $A$ are positive.
 
 We first note that $p$ is an odd function with roots at 0, $\pm\sqrt{3}$
 and local maxima at $\pm1$ ($p(\pm1) = \pm1$).
 Since the leading coefficient of $p$ is negative, $p$ is positive on 
-$[0,\sqrt{3}]$ and negative on $[\sqrt{3}, \infty)$. We now study the 
-convergence of $(x_k)$ for different values of $x_0$.
+$[0,\sqrt{3}]$ and negative on $[\sqrt{3}, \infty)$.
+
+We can study the convergence of $(x_k)$ for different values of $x_0$.
 \begin{itemize}
 	\item For $x_0 = 0$ or $\sqrt{3}$, $x_0$ is a root of $p$ so $x_k 
 	\to 0$ as $k \to \infty$.
@@ -319,19 +326,19 @@ convergence of $(x_k)$ for different values of $x_0$.
 	\sqrt{5}$ the iteration diverges, since $|p(x)| \geq x$ and $p$ is 
 	unbounded for $|x| \geq \sqrt{5}$.
 \end{itemize}
-Therefore, every diagonal sequence converges to 1 if $0 < \sigma_i < 
-\sqrt{3}$ for $i = 1:\rank(A)$, or equivalently $\|A\|_2 < \sqrt{3}$ 
+Thus, every diagonal sequence converges to 1 if $0 < \sigma_i < 
+\sqrt{3}$ for {$i = 1:\rank(A)$}, or equivalently $\|A\|_2 < \sqrt{3}$ 
 and $A$ is full rank.
 
 It follows that for a starting matrix $A$ with full rank and $\|A\|_2 < 
 \sqrt{3}$,
-\begin{align}
+\begin{align*}
 	\|U-X_{k+1}\|_2 &= \left\|PQ^* - P\left[\frac{1}{2}(3 \Sigma_k
 	-\Sigma_k^3)\right] Q^*\right\|_2
 	= \left\|I - \frac{1}{2}(3\Sigma_k - \Sigma_k^3)\right\|_2 \\
 	&= \max_{i = 1:n} \left|1 - \frac{1}{2}\left(3 \sigma_i^{(k)} - 
 	(\sigma_i^{(k)})^3\right)\right|,
-\end{align}
+\end{align*}
 which tends to 0 as $k \to \infty$.
 
 
@@ -349,8 +356,8 @@ which tends to 0 as $k \to \infty$.
 \end{enumerate}
 
 We first consider the $k$th step $X_{k+1} = (X_k + X_k^{-*})/2\,$ for 
-the Newton iteration of a matrix $A \in \mathbb{C}^{n\times n}$. We 
-identify 3 main operations:
+the Newton iteration of a matrix $A \in \mathbb{C}^{n\times n}$. 
+Counting the number of complex flops, we identify 3 operations:
 \begin{itemize}
 	\item One matrix inversion of $X_k \in \mathbb{C}^{\nxn}$: 
 	\hfill
@@ -367,14 +374,14 @@ identify 3 main operations:
 So the total number of operations for the Newton method is $2n^3 + 
 O(n^2)$.
 
-We now consider a step of the Newton-Schulz iteration $X_k(3I - 
-X_k^*X_K)/2$ for $X_0 = A \in \mathbb{C}^{\mxn}$.
-We fist note that $X_k^*X_k$, and by extension $(3I - X_K^*X_k)/2$, is 
+We now consider a step of the Newton-Schulz iteration $$\frac{1}{2} 
+X_k(3I - X_k^*X_K), \qquad X_0 = A \in \mathbb{C}^{\mxn}.$$
+We first note that $X_k^*X_k$, and by extension $(3I - X_K^*X_k)/2$, is 
 Hermitian in $\mathbb{C}^{\nxn}$.
 Therefore only the upper triangular elements of these matrices need to 
 be calculated, ie we only have to compute $\sum_{k=1}^{n} k= (n^2+n)/2$ 
 components.
-Calculating $X_k*X_k$, we use the Algorithm~\ref{alg:XstarX},
+To calculate $X_k^*X_k$, we use Algorithm~\ref{alg:XstarX},
 \begin{algorithm}
 	$b_{ij} = (X_k^*X_k)_{ij}$ \;
 	\For{$i = 1:n$}
@@ -396,7 +403,17 @@ dividing the result by 2 adds $n^2 + n$ operations. Finally multiplying
 by $X_k$ takes $2mn^2$ flops for a total of $3mn^2 + O(n^2) + O(mn)$ 
 flops per step.
 
-
+We comparing both methods, assuming both require the same number of 
+iterations to converge. 
+One step of the Newton iteration requires one matrix inversion, whereas 
+one step of the Newton-Schulz iteration requires two matrix 
+multiplications.
+Therefore, in order for the Newton-Schulz iterations to be quicker to 
+compute, we expect matrix multiplication to be twice as fast as matrix 
+inversion.
+Note that these considerations do not account for symmetry in the 
+Newton-Schulz iteration, which we consider to be implementation 
+dependent. 
 
 
 
@@ -417,10 +434,10 @@ that computes the polar decomposition of a matrix $A$.
 The two variables \texttt{newtSchulz} and \texttt{converged} control 
 the function's operation.
 The function starts by computing $U$ using the Newton's method, until
-the condition $\|X_k\|_2 < \sqrt{3}$ stored in \texttt{newtSchulz} 
+the condition $\|X_k\|_2 < \sqrt{3}$ stored in \texttt{newtSchulz},
 turns true. 
-From this point onwards, the function begins 
-using the {Newton-Schulz} iteration to calculate $U$.
+From this point onwards, the function begins using the {Newton-Schulz} 
+iteration to calculate $U$.
 
 The function stops iterating once the variable
 \begin{verbatim}
@@ -458,24 +475,24 @@ polar decomposition.
 		\caption{\label{fig:randnAccuracy}}
 	\end{subfigure}
 	\caption{
-	Figure showing (a) the number of iterations and 
+	Figure showing (a) the number of iterations,
 	(b) the accuracy of the polar decomposition of 
 	\texttt{rand(n)} computed using the Newton method only, and the 
 	\texttt{poldec} function. Note in (a) that the Newton only method 
 	quickly reaches the maximum allowed number of iterations at $n = 
-	11$.
+	11$. These results were obtained by running \texttt{randnTest.m}
 	\label{fig:randn}}
 \end{figure}
 We first tested the implementation of \texttt{poldec} by using random 
 matrices of size $n$ using the MATLAB function \texttt{rand(n)}. The 
 results of these experiments are summarised in Fig.~\ref{fig:randn}.
-We note that \texttt{poldec} which uses the Newton-Schulz iteration 
-converges significantly quicker and produces a more accurate result.
+We note that \texttt{poldec} converges significantly quicker and 
+produces a more accurate result.
 Quicker convergence for the Newton method could be achieved by using 
 more lenient convergence criteria, but this would likely lead 
-to decreased accuracy of the computed decomposition. 
+to decreased accuracy of the computed decomposition.
 
-\begin{table*}[h]
+\begin{table*}[t]
 	\centering
 	\begin{tabular}{ l c c c c c }
 		\toprule
@@ -502,18 +519,19 @@ to decreased accuracy of the computed decomposition.
 \end{table*}
 
 Table~\ref{tab:poldecresults} shows metrics related to computing the 
-polar decomposition of a few specific matrices using \texttt{poldec} 
-and a function using only the Newton method.
+polar decomposition of a few specific matrices using using only the 
+Newton method, and using \texttt{poldec}.
 
 We see that only one iteration is needed for the identity matrix 
 \texttt{eye(8)} since it is already unitary.
 
-Using \texttt{hilb(6)} as input illustrates the case when A is hermitian 
+Using \texttt{hilb(6)} as input illustrates the case when A is 
+Hermitian 
 positive definite.
-It is clear in this case that $U = I$ since $H$ is a hermitian positive 
+It is clear in this case that $U = I$ since $H$ is a Hermitian positive 
 definite matrix.
-However, both algorithms take a long time to compute $U$ since they are 
-unable to make these deductions. Since $U= I$ however, the 
+However, both algorithms take a long time to compute $U$ since they 
+must calculate $U$ iteratively. Since $U = I$ however, the 
 result is accurate to machine precision.
 
 The function takes a relatively large number of iterations to find the 
@@ -522,7 +540,7 @@ $$M \coloneqq \max \left\{\|A\|_2, \|A^{-1}\|_2 \right\} \geq
 \kappa_2(A)^{1/2}.$$
 Since for the Newton method
 $$\|U - X_{k+1}\|_2 \leq \frac{M}{2} \|U - X_k\|_2^2,$$
-for large values of $M$ convergence will be slow.
+convergence will be slow for large values of $M$.
 This explains the larger number of iterations for both \texttt{hilb(6)} 
 and \texttt{magic(6)}.
 
@@ -531,9 +549,9 @@ we achieve good accuracy and a small number of iterations using the
 \texttt{poldec} function. For the Newton method only, while the 
 iterations did not achieve the convergence criterion, both 
 \texttt{iterDist} and \texttt{unitDist} rapidly decrease past 
-$10^{-15}$ but keep fluctuating for a long time before one eventually 
-drops below $10^{-16}$. The output of the Newton only script is shown 
-below.
+$10^{-15}$ but keep fluctuating for a long time before 
+\texttt{iterDist} eventually drops below $10^{-16}$. The output of the 
+Newton only script is shown below.
 \begin{verbatim}
 k   	 |X_k-X_{k-1}|/|X_k|   |I - X_k^*X_k|
 === 	    ==============     ==============
@@ -541,7 +559,6 @@ k   	 |X_k-X_{k-1}|/|X_k|   |I - X_k^*X_k|
 5	       1.46536674e-05	    2.14730583e-10
 6	       1.07365042e-10	    9.33334681e-16
 7	       4.31775426e-16	    1.54939455e-15
-8	       5.49532361e-16	    1.51620177e-15
                     [...]
 121	     2.35513869e-16	    6.09764714e-16
 122	     2.15887713e-16	    6.08974934e-16
@@ -552,7 +569,7 @@ k   	 |X_k-X_{k-1}|/|X_k|   |I - X_k^*X_k|
 We also compared the runtime of \texttt{poldec} and a simple Newton's 
 method over the same number of iterates (taken from the number of 
 iterates required for the Newton only iteration to converge).
-\begin{table*}[t]
+\begin{table*}[b]
 	\centering
 	\begin{tabular}{ l c c c }
 		\toprule
@@ -576,8 +593,9 @@ iterates required for the Newton only iteration to converge).
 Table~\ref{tab:runtimes} shows the times taken to compute the polar 
 decompositions of some of the matrices. Overall the computation time 
 remains lower in most cases for the \texttt{poldec} function.
-This suggests that thanks the matrix multiplication implementation is 
-much faster than matrix inversion, as mentioned in Question 8.
+This suggests that the matrix multiplication implementation is 
+much faster than the implementation of matrix inversion, as mentioned 
+in Question 8.
 
 
 
@@ -596,10 +614,10 @@ we can compute the unique Cholesky factorization $A = R^*R$, where $R
 \in \mathbb{C}^{\nxn}$ is an upper-triangular matrix with strictly 
 positive diagonal values.
 Since the Cholesky factor is full rank, we can compute its polar 
-decomposition $R = UH$ with $U$ unitary and $H$ hermitian positive 
+decomposition $R = UH$ with $U$ unitary and $H$ Hermitian positive 
 definite.
 Using this decomposition, we get $$A = R^*R = (UH)^*UH = H^2.$$
-Hence $H$ is the matrix square root of $A$.
+Hence $H$ is positive definite matrix square root of $A$.
 
 We implemented the discussed method for calculating square roots in the 
 function \texttt{poldecsqrt} (in the \texttt{.m} file of the same name).
