@@ -1,5 +1,5 @@
-x = 5:2:100;
-numTests = 5;
+x = 5:100;
+numTests = 32;
 itArray = zeros(2,size(x,2));
 accuracyArray = zeros(2,size(x,2));
 for n=x
@@ -9,19 +9,46 @@ for n=x
         [U, H, tempIts] = poldecTest(A, "n", [1e-16 1e-16]);
         itArray(1,i) = itArray(1,i) + tempIts;
         accuracyArray(1,i) = accuracyArray(1,i) + norm(A-U*H,2);
+        A = rand(n);
         [U, H, tempIts] = poldecTest(A, "h", [1e-16 1e-16]);
         itArray(2,i) = itArray(2,i) + tempIts;
         accuracyArray(2,i) = accuracyArray(2,i) + norm(A-U*H,2);
     end
-    itArray(:,i) = itArray(:,i) ./ numTests;
-    accuracyArray(:,i) = accuracyArray(:,i) ./ numTests;
+    %itArray(:,i) = itArray(:,i) ./ numTests;
+    %accuracyArray(:,i) = accuracyArray(:,i) ./ numTests;
 end
+itArray = itArray ./ numTests;
+accuracyArray = accuracyArray ./ numTests;
 
+%Plot the accuracies calculated
 clf
 hold on
+box on
 plot(x, accuracyArray(1,:), "color", "b", "Marker", "s", "MarkerFaceColor", 'b');
 plot(x, accuracyArray(2,:), "color", "r", "Marker", "o", "MarkerFaceColor", "r");
+legend("Newton", "N-Schulz", "Location", "northwest");
+ylabel('$\|A - UH\|_2$','Interpreter','latex');
+xlabel("n");
+grid;
+%saveas(gcf, "randnAccuracy", "pdf");
 hold off
+
+%fprintf("Press enter to see the number of iterations\n");
+%w = waitforbuttonpress;
+
+%Plot the iterations
+clf
+hold on
+box on
+plot(x, itArray(1,:), "color", "b", "Marker", "s", "MarkerFaceColor", 'b');
+plot(x, itArray(2,:), "color", "r", "Marker", "o", "MarkerFaceColor", "r");
+legend("Newton", "N-Schulz", "Location", "northwest");
+ylabel("its", "FontName", "Consolas");
+xlabel("n");
+grid;
+saveas(gcf, "randnIts", "pdf");
+hold off
+
 
 function [U, H, its] = poldecTest(A, type, conv)
     hybrid = true;
@@ -54,7 +81,7 @@ function [U, H, its] = poldecTest(A, type, conv)
     
     fprintf("k   \t|X_k-X_{k-1}|/|X_{k}|\t|I - X_k*X_k|\n");
     fprintf("====\t===================\t==============\n");
-    while(not(converged) && its < 1000)
+    while(not(converged) && its < 100)
         if(not(newtSchulz))
             %We use the Newton method until either the convergence condition
             %   for the Newton-Schulz iterations is fulfilled, or convergence
@@ -70,7 +97,7 @@ function [U, H, its] = poldecTest(A, type, conv)
         unitDist = norm(eye(n) - Xnew' * Xnew, inf);
         
         newtSchulz = (norm(Xnew, 2) < sqrt(3)) && hybrid;
-        converged = (unitDist <= convCond(1)) || (iterDist <= convCond(2));
+        converged = (unitDist <= convCond(1)*n) || (iterDist <= convCond(2)*n);
         
         X = Xnew;
         its = its + 1;
@@ -78,4 +105,5 @@ function [U, H, its] = poldecTest(A, type, conv)
     end
     U = Xnew;
     H = U' * A;
+    %H = (H + H') / 2;
 end
