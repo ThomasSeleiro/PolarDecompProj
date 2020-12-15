@@ -452,7 +452,7 @@ iteration to calculate $U$.
 
 The function stops iterating once the variable
 \begin{verbatim}
-	converged = (unitDist <= 1e-16) || (iterDist <= 1e-16);
+	converged = (unitDist <= 1e-16 * n) || (iterDist <= 1e-16 * n);
 \end{verbatim}
 becomes true.
 Here \texttt{unitDist} stores the value $\|I -X_k^*X_k\|_\infty$ and 
@@ -464,7 +464,7 @@ For example, if \texttt{unitDist} $< u$, the matrix $X_k$ is unitary to
 machine precision. Similarly, if \texttt{iterDist} $< u$, the iterates 
 $X_k$ and $X_{k-1}$ are sufficiently close in double precision floating 
 point arithmetic, and any subsequent iterates will be close to $X_k$.
-Note that a maximum number of 1000 iterates per computation was set to 
+Note that a maximum number of 100 iterates per computation was set to 
 avoid long computation times if the algorithm doesn't manage to reduce 
 \texttt{unitDist} or \texttt{iterDist} enough.
 
@@ -514,11 +514,14 @@ to decreased accuracy of the computed decomposition.
 		& 
 		\texttt{poldec} \\
 		\midrule
-		\texttt{eye(8)} & 1 & 1 & 1 & 0 & 0 \\
-		\texttt{hilb(6)} & 1.5e07 & 28 & 31 & 0 & 1.9230e-16 \\
-		\texttt{magic(6)} & 4.7e16 & 68 & 60 & 1.8465e-14 & 
-		1.4991e-14 \\
-		\texttt{hadamard(8)} & 1 & 124 & 12 & 8.1113e-16 & 7.0890e-16\\
+		\texttt{eye(8)}      & 1      & 1  & 1  & 0          
+		                                              & 0 \\
+		\texttt{hilb(6)}     & 1.5e07 & 28 & 30 & 0          
+		                                              & 1.9230e-16 \\
+		\texttt{magic(6)}    & 4.7e16 & 58 & 59 & 2.7954e-14 
+		                                              &	2.3013e-14 \\
+		\texttt{hadamard(8)} & 1      & 7  & 10 & 2.4369e-15 
+		                                              & 6.8717e-16 \\
 		\bottomrule
 	\end{tabular}
 	\caption{
@@ -584,15 +587,15 @@ iterates required for the Newton only iteration to converge).
 	\centering
 	\begin{tabular}{ l c c c }
 		\toprule
-		& &\multicolumn{2}{c}{Runtime (in ms)} \\
+		& &\multicolumn{2}{c}{Runtime (in $\mu$s)} \\
 		\cmidrule(lr){3-4}
 		$A$ & \texttt{its} & Newton only & \texttt{poldec} \\
 		\midrule
-		\texttt{rand(8)}     & 12   & 1.574  & 1.166  \\
-		\texttt{rand(20)}    & 1000 & 78.362 & 52.129 \\
-		\texttt{hilb(6)}     & 28   & 1.513  & 1.608  \\
-		\texttt{magic(6)}    & 68   & 7.951  & 3.248  \\
-		\texttt{hadamard(8)} & 124  & 10.857 & 4.799  \\
+		\texttt{rand(8)}     & 11 & 547.7 & 750.2  \\
+		\texttt{rand(20)}    & 12 & 941.6 & 977.9  \\
+		\texttt{hilb(6)}     & 28 & 1442  & 1325   \\
+		\texttt{magic(6)}    & 59 & 6389  & 6510   \\
+		\texttt{hadamard(8)} & 10 & 718.9 & 564.3  \\
 		\bottomrule
 	\end{tabular}
 	\caption{
