@@ -9,6 +9,8 @@
 \usepackage{graphicx}
 \usepackage{subcaption}
 
+\usepackage{fancyvrb}
+
 \usepackage{natbib}
 \setcitestyle{numbers, square}
 
@@ -431,10 +433,14 @@ dependent.
 	polar decomposition of a nonsingular $A \in \mathbb{C}^{\nxn}$.
 \end{enumerate}
 
-We wrote the MATLAB function \texttt{poldec} (see \texttt{poldec.m} in 
-the GitHub repository 
-\emph{https://github.com/ThomasSeleiro/PolarDecompProj})
+We wrote the following MATLAB function \texttt{poldec}\footnote{
+All functions discussed can be found in the GitHub repository
+\emph{https://github.com/ThomasSeleiro/PolarDecompProj}}
 that computes the polar decomposition of a matrix $A$.
+
+{\small
+\VerbatimInput{poldec.m}
+}
 
 The two variables \texttt{newtSchulz} and \texttt{converged} control 
 the function's operation.
@@ -574,7 +580,7 @@ k   	 |X_k-X_{k-1}|/|X_k|   |I - X_k^*X_k|
 We also compared the runtime of \texttt{poldec} and a simple Newton's 
 method over the same number of iterates (taken from the number of 
 iterates required for the Newton only iteration to converge).
-\begin{table*}[b]
+\begin{table*}[t]
 	\centering
 	\begin{tabular}{ l c c c }
 		\toprule
@@ -625,7 +631,12 @@ Using this decomposition, we get $$A = R^*R = (UH)^*UH = H^2.$$
 Hence $H$ is positive definite matrix square root of $A$.
 
 We implemented the discussed method for calculating square roots in the 
-function \texttt{poldecsqrt} (in the \texttt{.m} file of the same name).
+function \texttt{poldecsqrt}.
+
+{\small
+	\VerbatimInput{poldecsqrt.m}
+}
+
 We used the MATLAB function \texttt{chol} to calculate the Cholesky 
 factor \texttt{R} of the input matrix \texttt{A}.
 \texttt{poldec} is then used to find the Hermitian factor \texttt{H} of 
