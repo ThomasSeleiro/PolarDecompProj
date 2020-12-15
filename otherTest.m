@@ -6,12 +6,12 @@ for i = 1:size(matrixArray,2)
     A = matrixArray{i};
     [U, H, its] = poldecTest(A, "n", [1e-16 1e-16]);
     acc = norm(A-U*H, 2);
-    itArray(1,i) = its / numTests;
-    accuracyArray(1,i) = acc / numTests;
+    itArray(1,i) = its;
+    accuracyArray(1,i) = acc;
     [U, H, its] = poldecTest(A, "h", [1e-16 1e-16]);
     acc = norm(A-U*H, 2);
-    itArray(2,i) = its / numTests;
-    accuracyArray(2,i) = acc / numTests;
+    itArray(2,i) = its;
+    accuracyArray(2,i) = acc;
 end
 
 clf;
@@ -59,7 +59,7 @@ function [U, H, its] = poldecTest(A, type, conv)
     
     fprintf("k   \t|X_k-X_{k-1}|/|X_{k}|\t|I - X_k*X_k|\n");
     fprintf("====\t===================\t==============\n");
-    while(not(converged) && its < 1000)
+    while(not(converged) && its < 100)
         if(not(newtSchulz))
             %We use the Newton method until either the convergence condition
             %   for the Newton-Schulz iterations is fulfilled, or convergence
@@ -75,7 +75,7 @@ function [U, H, its] = poldecTest(A, type, conv)
         unitDist = norm(eye(n) - Xnew' * Xnew, inf);
         
         newtSchulz = (norm(Xnew, 2) < sqrt(3)) && hybrid;
-        converged = (unitDist <= convCond(1)) || (iterDist <= convCond(2));
+        converged = (unitDist <= convCond(1)*n) || (iterDist <= convCond(2)*n);
         
         X = Xnew;
         its = its + 1;
@@ -83,4 +83,5 @@ function [U, H, its] = poldecTest(A, type, conv)
     end
     U = Xnew;
     H = U' * A;
+    %H = (H + H') / 2;
 end

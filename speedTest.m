@@ -1,21 +1,24 @@
-itArray = zeros(2,4);
-accuracyArray = zeros(2,4);
 matrixArray = {rand(8) rand(20) hilb(6) magic(6) hadamard(8)};
-numTries = 100;
-timesArray = zeros(2, 5, numTries);
+timesArray = zeros(2, size(matrixArray,2));
+itArray = zeros(2,size(matrixArray,2));
+for i = 1:256
+    A = rand(n);
+    newtonTime = tic;
+    [U, H, its] = poldecTest(A, "n");
+    [U, H, its] = poldecTest(A, "h");
+    toc(newtonTime);
+end
+
 for i = 1:size(matrixArray,2)
     A = matrixArray{i};
-    for k = 1:numTries
-        newtonTime = tic;
-        [U, H, its] = poldecTest(A, "n");
-        timesArray(1, i, k) = toc(newtonTime);
-        itArray(1, i) = its;
-        nsTime = tic;
-        [U, H, its] = poldecTest(A, "h", its);
-        timesArray(2, i, k) = toc(nsTime);
-        itArray(2, i) = its;
-    end
-    timesArray = timesArray ./ numTries;
+    hybridTime = tic;
+    [U, H, hybridits] = poldecTest(A, "h");
+    timesArray(2, i) = toc(hybridTime);
+    itArray(2, i) = hybridits;
+    newtonTime = tic;
+    [U, H, its] = poldecTest(A, "n", hybridits);
+    timesArray(1, i) = toc(newtonTime);
+    itArray(1, i) = its;
 end
 
 
@@ -67,7 +70,7 @@ function [U, H, its] = poldecTest(A, type, iters, conv)
             unitDist = norm(eye(n) - Xnew' * Xnew, inf);
 
             newtSchulz = (norm(Xnew, 2) < sqrt(3)) && hybrid;
-            converged = (unitDist <= convCond(1)) || (iterDist <= convCond(2));
+            converged = (unitDist <= convCond(1)*n) || (iterDist <= convCond(2)*n);
 
             X = Xnew;
             its = its + 1;
@@ -77,7 +80,7 @@ function [U, H, its] = poldecTest(A, type, iters, conv)
 
         fprintf("k   \t|X_k-X_{k-1}|/|X_{k}|\t|I - X_k*X_k|\n");
         fprintf("====\t===================\t==============\n");
-        while(not(converged) && its < 1000)
+        while(not(converged) && its < 100)
             if(not(newtSchulz))
                 %We use the Newton method until either the convergence condition
                 %   for the Newton-Schulz iterations is fulfilled, or convergence
@@ -93,7 +96,7 @@ function [U, H, its] = poldecTest(A, type, iters, conv)
             unitDist = norm(eye(n) - Xnew' * Xnew, inf);
 
             newtSchulz = (norm(Xnew, 2) < sqrt(3)) && hybrid;
-            converged = (unitDist <= convCond(1)) || (iterDist <= convCond(2));
+            converged = (unitDist <= convCond(1)*n) || (iterDist <= convCond(2)*n);
 
             X = Xnew;
             its = its + 1;
@@ -102,4 +105,5 @@ function [U, H, its] = poldecTest(A, type, iters, conv)
     end
     U = Xnew;
     H = U' * A;
+    %H = (H + H') / 2;
 end
