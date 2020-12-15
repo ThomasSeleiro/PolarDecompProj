@@ -1,8 +1,8 @@
 function [U, H, its] = poldec(A)
 %POLDEC Polar Decomposition
-%   [U, H, ITS] = poldec(A) computes the polar decomposition A = U*H
-%   of the square, nonsingular matrix A. ITS is the number of
-%   iterations for convergence.
+%   [U, H, ITS] = poldec(A) computes the polar decomposition 
+%   A = U*H of the square, nonsingular matrix A. ITS is the 
+%   number ofiterations for convergence.
     n = size(A,1);
     X    = A;
     Xnew = zeros(n);
@@ -13,13 +13,14 @@ function [U, H, its] = poldec(A)
     fprintf("====\t===================\t==============\n");
     while(not(converged) && its < 1000)
         if(not(newtSchulz))
-            %We use the Newton method until either the convergence condition
-            %   for the Newton-Schulz iterations is fulfilled, or convergence
-            %   is acheived.
+            %We use the Newton method until either the 
+            %   convergence conditionfor the Newton-Schulz 
+            %   iterations is fulfilled, or convergence is
+            %   acheived.
             Xnew = (X + inv(X)')/2;
         else
-            %We use the Newton-Schulz method, having guaranteed it will
-            %   converge from this point onwards.
+            %We use the Newton-Schulz method, having guaranteed 
+            %   it will converge from this point onwards.
             Xnew = X/2 * (3*eye(n) - X' * X);
         end
         
