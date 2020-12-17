@@ -1,6 +1,6 @@
 itArray = zeros(2,4);
 accuracyArray = zeros(2,4);
-matrixArray = {eye(8) hilb(6) magic(6) hadamard(8)};
+matrixArray = {eye(8) hilb(6) cast(magic(6), "double") hadamard(8)};
 namesArray = ["eye(8)" "hilb(6)" "magic(6)" "hadamard(8)"];
 for i = 1:size(matrixArray,2)
     A = matrixArray{i};
@@ -14,19 +14,19 @@ for i = 1:size(matrixArray,2)
     accuracyArray(2,i) = acc;
 end
 
-clf;
-hold on;
-yyaxis left;
-bar(itArray');
-h1 = ylabel("its", "FontName", "Consolas");
-yyaxis right;
-semilogy(accuracyArray', "Marker", "s", "Color", "r", "MarkerFaceColor", "r");
-ylabel('$\|A - UH\|_2$','Interpreter','latex')
-set(gca, "XTickLabel", namesArray);
-set(gca, "XTick", 1:size(itArray, 2));
-set(gca, 'XTickLabelRotation',45);
-legend("Newton", "N-Schulz", "Newton", "N-Schulz", "Location", "northwest");
-hold off;
+%clf;
+%hold on;
+%yyaxis left;
+%bar(itArray');
+%h1 = ylabel("its", "FontName", "Consolas");
+%yyaxis right;
+%semilogy(accuracyArray', "Marker", "s", "Color", "r", "MarkerFaceColor", "r");
+%ylabel('$\|A - UH\|_2$','Interpreter','latex')
+%set(gca, "XTickLabel", namesArray);
+%set(gca, "XTick", 1:size(itArray, 2));
+%set(gca, 'XTickLabelRotation',45);
+%legend("Newton", "N-Schulz", "Newton", "N-Schulz", "Location", "northwest");
+%hold off;
 
 function [U, H, its] = poldecTest(A, type, conv)
     hybrid = true;
@@ -83,5 +83,5 @@ function [U, H, its] = poldecTest(A, type, conv)
     end
     U = Xnew;
     H = U' * A;
-    %H = (H + H') / 2;
+    H = (H + H') / 2;
 end

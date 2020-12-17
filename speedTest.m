@@ -105,5 +105,5 @@ function [U, H, its] = poldecTest(A, type, iters, conv)
     end
     U = Xnew;
     H = U' * A;
-    %H = (H + H') / 2;
+    H = (H + H') / 2;
 end

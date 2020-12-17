@@ -1,8 +1,8 @@
 function [U, H, its] = poldec(A)
 %POLDEC Polar Decomposition
 %   [U, H, ITS] = poldec(A) computes the polar decomposition 
-%   A = U*H of the square, nonsingular matrix A. ITS is the 
-%   number ofiterations for convergence.
+%   A = U*H of the square, nonsingular matrix A. its is the 
+%   number of iterations before convergence is achieved.
     n = size(A,1);
     X    = A;
     Xnew = zeros(n);
@@ -35,5 +35,6 @@ function [U, H, its] = poldec(A)
         fprintf("%4d\t%19.8e\t%13.8e\n", its, iterDist, unitDist);
     end
     U = Xnew;
-    H = U' * A;
+    Hstar = U' * A;
+    H = (Hstar + Hstar')/2;
 end

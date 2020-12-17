@@ -1,9 +1,9 @@
 x = 5:100;
-numTests = 32;
+numTests = 16;
 itArray = zeros(2,size(x,2));
 accuracyArray = zeros(2,size(x,2));
+i = 1;
 for n=x
-    i = n - x(1) + 1;
     for k=1:numTests
         A = rand(n);
         [U, H, tempIts] = poldecTest(A, "n", [1e-16 1e-16]);
@@ -14,40 +14,41 @@ for n=x
         itArray(2,i) = itArray(2,i) + tempIts;
         accuracyArray(2,i) = accuracyArray(2,i) + norm(A-U*H,2);
     end
-    %itArray(:,i) = itArray(:,i) ./ numTests;
-    %accuracyArray(:,i) = accuracyArray(:,i) ./ numTests;
+    i = i+1;
 end
 itArray = itArray ./ numTests;
 accuracyArray = accuracyArray ./ numTests;
 
 %Plot the accuracies calculated
 clf
+scatter(x, accuracyArray(1,:), "Marker", "s", "MarkerFaceColor", 'b');
 hold on
-box on
-plot(x, accuracyArray(1,:), "color", "b", "Marker", "s", "MarkerFaceColor", 'b');
-plot(x, accuracyArray(2,:), "color", "r", "Marker", "o", "MarkerFaceColor", "r");
+scatter(x, accuracyArray(2,:), "Marker", "o", "MarkerFaceColor", "r");
+hold off
 legend("Newton", "N-Schulz", "Location", "northwest");
 ylabel('$\|A - UH\|_2$','Interpreter','latex');
-xlabel("n");
+xlabel("$n$", "interpreter", "latex");
+ylim([-inf 1e-13]);
+box on
 grid;
-%saveas(gcf, "randnAccuracy", "pdf");
-hold off
+saveas(gcf, "randnAccuracy", "epsc");
+
 
 %fprintf("Press enter to see the number of iterations\n");
 %w = waitforbuttonpress;
 
 %Plot the iterations
 clf
+scatter(x, itArray(1,:), "Marker", "s", "MarkerFaceColor", 'b');
 hold on
-box on
-plot(x, itArray(1,:), "color", "b", "Marker", "s", "MarkerFaceColor", 'b');
-plot(x, itArray(2,:), "color", "r", "Marker", "o", "MarkerFaceColor", "r");
-legend("Newton", "N-Schulz", "Location", "northwest");
-ylabel("its", "FontName", "Consolas");
-xlabel("n");
-grid;
-saveas(gcf, "randnIts", "pdf");
+scatter(x, itArray(2,:), "Marker", "o", "MarkerFaceColor", "r");
 hold off
+legend("Newton", "poldec", "Location", "northwest");
+ylabel("its", "FontName", "Consolas");
+xlabel("$n$", "interpreter", "latex");
+box on
+grid;
+saveas(gcf, "randnIts", "epsc");
 
 
 function [U, H, its] = poldecTest(A, type, conv)
@@ -105,5 +106,5 @@ function [U, H, its] = poldecTest(A, type, conv)
     end
     U = Xnew;
     H = U' * A;
-    %H = (H + H') / 2;
+    H = (H + H') / 2;
 end
