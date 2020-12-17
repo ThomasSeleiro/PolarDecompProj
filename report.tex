@@ -35,7 +35,7 @@
 	{Department of Mathematics, University of Manchester, 
 	Manchester, M13 9PL, UK
 	(\texttt{thomas.seleiro@postgrad.manchester.ac.uk})}}
-\date{December 15, 2020}
+\date{December 17, 2020}
 \maketitle
 
 
@@ -49,7 +49,7 @@ a thin singular value decomposition $A = P \Sigma Q^*$ where $P \in
 \mathbb{C}^{\mxn}$ has orthogonal columns, $Q \in 
 \mathbb{C}^{\nxn}$ is unitary, and $\Sigma \in 
 \mathbb{C}^{\nxn}$ is diagonal with $\Sigma = \diag(\sigma_1, 
-\ldots, \sigma_r)$ where $\rank(A) = r$. The coefficients $\sigma_1 
+\ldots, \sigma_r)$, where $\rank(A) = r$. The coefficients $\sigma_1 
 \geq \cdots \geq \sigma_r \geq 0$ are the singular values of $A$.
 
 We can write
@@ -60,7 +60,7 @@ We can write
 where $U$ and $H$ satisfy the properties of a polar decomposition.
 In particular we have $H = Q \Sigma Q^*$ where $\Sigma$ is diagonal 
 with non-negative diagonal entries and $Q$ is unitary.
-Thus the diagonal values of $\Sigma$ are the eigenvalues of $H$.
+Thus the diagonal elements of $\Sigma$ are the eigenvalues of $H$.
 
 
 
@@ -75,7 +75,7 @@ Thus the diagonal values of $\Sigma$ are the eigenvalues of $H$.
 
 We first suppose that $U$ and $H$ commute. Note that for the product
 $HU$ to be well defined, we must have $m = n$, and hence
-$U\in\mathbb{C}^\nxn$ is unitary. Since $A = UH = HU$ we get
+$U\in\mathbb{C}^{\nxn}$ is unitary. Since $A = UH = HU$ we get
 \begin{align}
 	\label{eq:AstarA}
 	A^*A &= (UH)^* (UH) = H^*(U^*U)H = H^2 \\
@@ -122,8 +122,9 @@ using $P^*P = I_n$. Therefore $U$ and $H$ commute.
 \end{enumerate}
 
 Suppose $A$ is full rank. Then the singular values of $A$ are strictly 
-positive. Since $A^*A = (Q\Sigma P^*)(P\Sigma Q^*) = Q\Sigma^2Q^*$, we 
-have
+positive. Since 
+$$A^*A = (Q\Sigma P^*)(P\Sigma Q^*) = Q\Sigma^2Q^*,$$
+we have
 \begin{align}
 	t^2I + A^*A = Q(t^2I)Q^* + Q \Sigma^2Q^* = QDQ^*,
 	\label{eq:Q4eq1}
@@ -139,7 +140,8 @@ integral, leaving the right hand side of~(\ref{eq:Q4}) in the form
 $$
 	\frac{2}{\pi} A\, Q \left(\int_{0}^{\infty}D^{-1}dt\right) Q^*.
 $$
-The integral is a diagonal matrix where the $i$th diagonal component is
+The integral is a diagonal matrix where the $i$th diagonal component is 
+given by
 $$
 	\int_{0}^{\infty} \frac{1}{\sigma_i^2 + t^2} \, dt =
 	\left[\frac{1}{\sigma_i} \arctan \left(\frac{t}{\sigma_i}\right)
@@ -167,7 +169,7 @@ $$
 We know that $U$ is the closest unitary matrix to $A$, and since 
 $U^*U=I$, we want to find a solution to the equation
 $$
-	F(X) = 0,\qquad F(X)\coloneqq X^*X - I
+	F(X) = 0,\qquad F(X)\coloneqq X^*X - I,
 $$
 using a Newton method starting at $A$.
 The general form of the Newton method~{[\citealp{Kell2003},~p.2]} is
@@ -191,10 +193,10 @@ $$
 	X_k^* X_{k+1} + X_{k+1}^*X_k = X_k^* X_k + I.
 $$
 
-We know that for any matrix we can write $B = 1/2(B + B^*) + 
-1/2(B-B^*)$, where the terms on the right-hand side are the Hermitian 
-and skew Hermitian components respectively~[\citealp{hojo1985}, p.170].
-Setting the skew Hermitian part to zero, and taking $B = X_k^*X_{k+1}$ 
+We know that for any matrix $B$, we can write $B = (B + B^*)/2 \, + 
+(B-B^*)/2$, where the terms on the right-hand side are the Hermitian 
+and skew-Hermitian components respectively~[\citealp{hojo1985}, p.170].
+Setting the skew-Hermitian part to zero, and taking $B = X_k^*X_{k+1}$ 
 gives
 $$ X_k^*X_{k+1} = \frac{1}{2} \, (X_k^*X_k + I).$$
 Assuming that $X_k$ (and by extension $A$) is non-singular, 
@@ -256,19 +258,14 @@ $Q$ are orthogonal,
 	\right\|_2 \left\| (I - \Sigma_k)^2 Q^*\right\|_2 \\
 	&= \frac{1}{2}\, \left\|\Sigma_k^{-1}\right\|_2 \left\| \left( I - 
 	\Sigma_k \right)^2 \right\|_2 \\
-	&\leq \frac{1}{2}\, \|X_k\|_2 \|I - \Sigma_k\|_2^2 \\
-	&= \frac{1}{2}\, \|X_k\|_2 \|U - X_k\|_2^2
+	&\leq \frac{1}{2}\, \|X_k^{-1}\|_2 \|I - \Sigma_k\|_2^2 \\
+	&= \frac{1}{2}\, \|X_k^{-1}\|_2 \|U - X_k\|_2^2
 \end{align*}
 
-To achieve convergence, we need to bound $\|X_k\|$ by a 
-constant. We do so by observing that
-$$
-	\|X_{k+1}\|_2 = \max_{i = 1:n} \frac{\sigma_i + \sigma_i^{-1}}{2}
-	\leq \max \left\{ \left\|X_k \right\|_2
-	, \left\|X_k^{-1} \right\|_2 \right\}.
-$$
-So for all $k$, $\|X_k\|_2 \leq M \coloneqq \max\{\|A\|_2, 
-\|A^{-1}\|_2\}$.
+Looking at the diagonal components of $\Sigma_k$, we note that each one 
+converges to 1.
+Thus the sequence $(X_k)$ converges and is bounded above by some 
+constant factor $M>0$.
 Thus we conclude that the Newton method converges quadratically.
 
 
@@ -295,11 +292,12 @@ the expression of $X_1$ with the thin SVD $A = P \Sigma Q^*$ and get
 \end{align*}
 Thus we can write $X_1 = P \Sigma_1 Q^*$ where $\Sigma_1 = (3\Sigma - 
 \Sigma^3)/2$.
-Applying the same method recursively we can write $X_k = P\Sigma_k Q^*$ 
+Applying the same method recursively, we can write $X_k = P\Sigma_k 
+Q^*$ 
 with
 $$
 \Sigma_k = \diag(\sigma_i^{(k)}), \qquad \Sigma_{k+1} = \diag
-(3\sigma_i^{(k)} - (\sigma_i^{(k)})^3).
+\left(3\sigma_i^{(k)} - (\sigma_i^{(k)})^3\right).
 $$
 
 In order for the method to converge, we require every diagonal element 
@@ -444,7 +442,7 @@ that computes the polar decomposition of a matrix $A$.
 
 The two variables \texttt{newtSchulz} and \texttt{converged} control 
 the function's operation.
-The function starts by computing $U$ using the Newton's method, until
+The function starts by computing $U$ using the Newton method, until
 the condition $\|X_k\|_2 < \sqrt{3}$ stored in \texttt{newtSchulz},
 turns true. 
 From this point onwards, the function begins using the {Newton-Schulz} 
@@ -459,17 +457,40 @@ Here \texttt{unitDist} stores the value $\|I -X_k^*X_k\|_\infty$ and
 \texttt{iterDist} stores $\|X_k - X_{k-1} \|_\infty / \|X_k\|_\infty$.
 We motivate this choice for convergence by noting that if either 
 distance is of the order of the unit roundoff $u = 10^{-16}$, the 
-iterates stop gaining precision in double floating point arithmetic.
+iterates stop gaining accuracy in double floating point arithmetic.
 For example, if \texttt{unitDist} $< u$, the matrix $X_k$ is unitary to 
-machine precision. Similarly, if \texttt{iterDist} $< u$, the iterates 
+machine precision.
+Similarly, if \texttt{iterDist} $< u$, the iterates 
 $X_k$ and $X_{k-1}$ are sufficiently close in double precision floating 
 point arithmetic, and any subsequent iterates will be close to $X_k$.
-Note that a maximum number of 100 iterates per computation was set to 
+Experiments have shown that achieving a strict condition of 
+\texttt{unitDist} or \texttt{iterDist} $ \leq u$ is not feasible for 
+large matrices, where the accuracy stops increasing and fluctuates 
+above $u$.
+Therefore, we add a relaxation factor of $n$ to both conditions to 
+avoid ineffective iterations, and ensure convergence occurs.
+Note that we set a maximum number of 100 iterates per computation to 
 avoid long computation times if the algorithm doesn't manage to reduce 
 \texttt{unitDist} or \texttt{iterDist} enough.
 
-Once $U$ is calculated, we simply form $H = U^*A$ to output the full 
-polar decomposition.
+Once $U$ is calculated, we form \texttt{Hstar = U' * A}.
+Whilst in theory this product should give the Hermitian polar factor, 
+round-off errors do not guarantee this matrix will be Hermitian.
+Our experiments have shown that for some matrices with large condition 
+numbers for example, \texttt{Hstar} can become further from a 
+Hermitian matrix as $\kappa_2(A)$ increases.
+The script \texttt{condTest.m} produces $10 
+\times 10$ matrices with $\sigma_1 = \kappa$, $\sigma_{10} = 1$ and 
+the remaining singular values are sampled uniformly from the range $[0, 
+\kappa]$. It shows that the skew-Hermitian component of \texttt{Hstar} 
+becomes larger with $\kappa$.
+Therefore before outputting \texttt{H}, we symmetrize it and return the 
+matrix \texttt{H = (Hstar + Hstar')/2} to ensure the output is 
+symmetric. 
+Note that in cases where \texttt{Hstar} has a large skew-Hermitian 
+component, the product \texttt{U*H} is likely to be distant from the 
+input matrix \texttt{A}. This is the case for \texttt{magic(6)} in 
+Table~\ref{tab:poldecresults} for example.
 
 
 
@@ -489,19 +510,26 @@ polar decomposition.
 	Figure showing (a) the number of iterations,
 	(b) the accuracy of the polar decomposition of 
 	\texttt{rand(n)} computed using the Newton method only, and the 
-	\texttt{poldec} function. Note in (a) that the Newton only method 
-	quickly reaches the maximum allowed number of iterations at $n = 
-	11$. These results were obtained by running \texttt{randnTest.m}
-	\label{fig:randn}.}
+	\texttt{poldec} function. These results were obtained by running 
+	\texttt{randnTest.m}.
+	\label{fig:randn}}
 \end{figure}
-We first tested the implementation of \texttt{poldec} by using random 
-matrices of size $n$ using the MATLAB function \texttt{rand(n)}. The 
-results of these experiments are summarised in Fig.~\ref{fig:randn}.
-We note that \texttt{poldec} converges significantly quicker and 
-produces a more accurate result.
-Quicker convergence for the Newton method could be achieved by using 
-more lenient convergence criteria, but this would likely lead 
-to decreased accuracy of the computed decomposition.
+We tested the implementation of \texttt{poldec} by using random 
+matrices of size $n$ using the MATLAB function \texttt{rand(n)}.
+The results of these experiments are summarised in Fig.~\ref{fig:randn}.
+These results show that the Newton method takes more iterations to 
+calculate the polar decomposition compared to \texttt{poldec}.
+However, \texttt{poldec} trades off more iterations for a generally 
+more accurate decomposition.
+We note that the fluctuations in the data likely are due to the 
+symmetrizing of \texttt{Hstar}.
+This observation is backed up by further experimentation, and can be 
+justified by noting that \texttt{U} is unitary to machine precision.
+Therefore we expect $UH_* = U(U^*A)$ to be close to $A$ in floating 
+point arithmetic.
+However, \texttt{H} need not be close to the exact Hermitian 
+polar factor of $A$. In this experiment, $\|A - UH\|_2$ reached up to 
+$5 \times 10^{13}$.
 
 \begin{table*}[t]
 	\centering
@@ -517,16 +545,16 @@ to decreased accuracy of the computed decomposition.
 		\texttt{eye(8)}      & 1      & 1  & 1  & 0          
 		                                              & 0 \\
 		\texttt{hilb(6)}     & 1.5e07 & 28 & 30 & 0          
-		                                              & 1.9230e-16 \\
-		\texttt{magic(6)}    & 4.7e16 & 58 & 59 & 2.7954e-14 
-		                                              &	2.3013e-14 \\
-		\texttt{hadamard(8)} & 1      & 7  & 10 & 2.4369e-15 
-		                                              & 6.8717e-16 \\
+		                                              & 1.4582e-16 \\
+		\texttt{magic(6)}    & 4.7e16 & 58 & 59 & 3.4735e-01 
+		                                              &	3.4735e-01 \\
+		\texttt{hadamard(8)} & 1      & 7  & 10 & 2.5811e-15 
+		                                              & 6.9352e-16 \\
 		\bottomrule
 	\end{tabular}
 	\caption{
 	Results of experiments applying \texttt{poldec} 
-	to	various matrices. A variant of the function that only uses the 
+	to	various matrices. A variant of the function using only the 
 	Newton method was also used for comparison. Results obtained by 
 	running \texttt{otherTest.m}.
 	\label{tab:poldecresults}}
@@ -539,50 +567,35 @@ Newton method, and using \texttt{poldec}.
 We see that only one iteration is needed for the identity matrix 
 \texttt{eye(8)} since it is already unitary.
 
-Using \texttt{hilb(6)} as input illustrates the case when A is 
-Hermitian 
-positive definite.
-It is clear in this case that $U = I$ since $H$ is a Hermitian positive 
+The input \texttt{hilb(6)} illustrates the case when A is 
+Hermitian positive definite.
+In this case it is clear that $U = I$ since $H$ is a Hermitian positive 
 definite matrix.
 However, both algorithms take a long time to compute $U$ since they 
 must calculate $U$ iteratively. Since $U = I$ however, the 
 result is accurate to machine precision.
 
 The function takes a relatively large number of iterations to find the 
-polar decomposition of \texttt{magic(6)}. We note that for any matrix $A$,
-$$M \coloneqq \max \left\{\|A\|_2, \|A^{-1}\|_2 \right\} \geq 
-\kappa_2(A)^{1/2}.$$
-Since for the Newton method
-$$\|U - X_{k+1}\|_2 \leq \frac{M}{2} \|U - X_k\|_2^2,$$
-convergence will be slow for large values of $M$.
-This explains the larger number of iterations for both \texttt{hilb(6)} 
-and \texttt{magic(6)}.
+polar decomposition of \texttt{magic(6)}.
+Indeed, \texttt{magic(6)} has a large condition number and thus forming 
+$A^{-*}$ will add inaccuracies to the iterates. 
+This causes the algorithm to run more iterations.
+Note that this is also applicable when explaining why \texttt{hilb(6)} 
+takes more iterations to compute.
+We also note that the large error in accuracy in the polar 
+decomposition of \texttt{magic(6)} comes from the fact that the 
+computed $H_* = U^*A$ has a large skew-Hermitian component (of order 
+$10^{-1}$) since the matrix is poorly conditioned.
 
 For the computation of the polar decomposition of \texttt{hadamard(8)}, 
 we achieve good accuracy and a small number of iterations using the 
-\texttt{poldec} function. For the Newton method only, while the 
-iterations did not achieve the convergence criterion, both 
-\texttt{iterDist} and \texttt{unitDist} rapidly decrease past 
-$10^{-15}$ but keep fluctuating for a long time before 
-\texttt{iterDist} eventually drops below $10^{-16}$. The output of the 
-Newton only script is shown below.
-\begin{verbatim}
-k   	 |X_k-X_{k-1}|/|X_k|   |I - X_k^*X_k|
-=== 	    ==============     ==============
-                    [...]
-5	       1.46536674e-05	    2.14730583e-10
-6	       1.07365042e-10	    9.33334681e-16
-7	       4.31775426e-16	    1.54939455e-15
-                    [...]
-121	     2.35513869e-16	    6.09764714e-16
-122	     2.15887713e-16	    6.08974934e-16
-123      1.17756934e-16	    5.84808662e-16
-124      7.85046229e-17	    5.59620674e-16
-\end{verbatim}
+\texttt{poldec} function and the Newton method.
+Similar to the case with random matrices of size n, \texttt{poldec} 
+calculates more iterates but achieves a more accurate result.
 
 We also compared the runtime of \texttt{poldec} and a simple Newton's 
 method over the same number of iterates (taken from the number of 
-iterates required for the Newton only iteration to converge).
+iterates required for \texttt{poldec} to converge).
 \begin{table*}[t]
 	\centering
 	\begin{tabular}{ l c c c }
@@ -591,11 +604,11 @@ iterates required for the Newton only iteration to converge).
 		\cmidrule(lr){3-4}
 		$A$ & \texttt{its} & Newton only & \texttt{poldec} \\
 		\midrule
-		\texttt{rand(8)}     & 11 & 547.7 & 750.2  \\
-		\texttt{rand(20)}    & 12 & 941.6 & 977.9  \\
-		\texttt{hilb(6)}     & 28 & 1442  & 1325   \\
-		\texttt{magic(6)}    & 59 & 6389  & 6510   \\
-		\texttt{hadamard(8)} & 10 & 718.9 & 564.3  \\
+		\texttt{rand(8)}     & 9  & 681.1 & 737.1  \\
+		\texttt{rand(20)}    & 11 & 935.2 & 953.6  \\
+		\texttt{hilb(6)}     & 30 & 1979  & 1709   \\
+		\texttt{magic(6)}    & 59 & 7673  & 7712   \\
+		\texttt{hadamard(8)} & 10 & 692.9 & 537.5  \\
 		\bottomrule
 	\end{tabular}
 	\caption{
@@ -605,11 +618,13 @@ iterates required for the Newton only iteration to converge).
 	\label{tab:runtimes}}
 \end{table*}
 Table~\ref{tab:runtimes} shows the times taken to compute the polar 
-decompositions of some of the matrices. Overall the computation time 
-remains lower in most cases for the \texttt{poldec} function.
-This suggests that the matrix multiplication implementation is 
-much faster than the implementation of matrix inversion, as mentioned 
-in Question 8.
+decompositions of some of the matrices referenced previously.
+Overall the computation times for \texttt{poldec} are similar to those 
+of the Newton method.
+As discussed in Question 8, these times suggest that the matrix 
+multiplication implementation is faster than the implementation of 
+matrix inversion (close to twice as fast in this case, since the 
+runtimes are similar)
 
 
 
